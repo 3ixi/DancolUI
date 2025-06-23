@@ -39,18 +39,17 @@ git clone https://github.com/3iXi/DancolUI.git
     <title>我的项目</title>
     
     <!-- Dancol CSS -->
-    <link rel="stylesheet" href="path/to/css/dancol-core.css">
-    <link rel="stylesheet" href="path/to/css/dancol-themes.css">
-    <link rel="stylesheet" href="path/to/css/dancol-components.css">
+    <link rel="stylesheet" href="assets/css/dancol-core.css">
+    <link rel="stylesheet" href="assets/css/dancol-themes.css">
+    <link rel="stylesheet" href="assets/css/dancol-components.css">
 </head>
 <body>
     <!-- 您的页面内容 -->
     
     <!-- Dancol JavaScript -->
-    <script src="path/to/js/dancol-core.js"></script>
-    <script src="path/to/js/dancol-theme.js"></script>
-    <script src="path/to/js/dancol-toast.js"></script>
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/dancol-core.js"></script>
+    <script src="assets/js/dancol-theme.js"></script>
+    <script src="assets/js/dancol-toast.js"></script>
 </body>
 </html>
 ```
