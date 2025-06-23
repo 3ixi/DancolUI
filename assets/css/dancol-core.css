@@ -1,0 +1,837 @@
+/**
+ * Dancol UI Framework - 丹青UI框架
+ * 核心样式文件
+ * 版本: 1.0.0
+ * 作者: Dancol Team
+ * 描述: 提供基础的CSS重置、布局系统和核心样式
+ */
+
+/* CSS变量定义 - 默认主题（淡蓝主题） */
+:root {
+  /* 主色调 */
+  --dancol-primary: #6ba3d6;
+  --dancol-primary-light: #a8c8e1;
+  --dancol-primary-dark: #4a7ba7;
+  
+  /* 辅助色调 */
+  --dancol-secondary: #b8d4f0;
+  --dancol-accent: #f0f7ff;
+  
+  /* 文字颜色 */
+  --dancol-text-primary: #2c3e50;
+  --dancol-text-secondary: #5a6c7d;
+  --dancol-text-muted: #8492a6;
+  --dancol-text-inverse: #ffffff;
+  
+  /* 背景颜色 */
+  --dancol-bg-primary: #ffffff;
+  --dancol-bg-secondary: #f8fafc;
+  --dancol-bg-tertiary: #e2e8f0;
+  
+  /* 边框颜色 */
+  --dancol-border-light: #e2e8f0;
+  --dancol-border-medium: #cbd5e0;
+  --dancol-border-dark: #a0aec0;
+  
+  /* 状态颜色 */
+  --dancol-success: #48bb78;
+  --dancol-warning: #ed8936;
+  --dancol-error: #f56565;
+  --dancol-info: #4299e1;
+  
+  /* 阴影 */
+  --dancol-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --dancol-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --dancol-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* 圆角 */
+  --dancol-radius-sm: 4px;
+  --dancol-radius-md: 8px;
+  --dancol-radius-lg: 12px;
+  --dancol-radius-xl: 16px;
+  
+  /* 间距 */
+  --dancol-spacing-xs: 4px;
+  --dancol-spacing-sm: 8px;
+  --dancol-spacing-md: 16px;
+  --dancol-spacing-lg: 24px;
+  --dancol-spacing-xl: 32px;
+  
+  /* 字体大小 */
+  --dancol-text-xs: 12px;
+  --dancol-text-sm: 14px;
+  --dancol-text-base: 16px;
+  --dancol-text-lg: 18px;
+  --dancol-text-xl: 20px;
+  --dancol-text-2xl: 24px;
+  --dancol-text-3xl: 30px;
+  
+  /* 过渡动画 */
+  --dancol-transition-fast: 0.15s ease-in-out;
+  --dancol-transition-normal: 0.3s ease-in-out;
+  --dancol-transition-slow: 0.5s ease-in-out;
+}
+
+/* CSS重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: var(--dancol-text-base);
+  line-height: 1.6;
+  color: var(--dancol-text-primary);
+  background-color: var(--dancol-bg-primary);
+  transition: background-color var(--dancol-transition-normal), color var(--dancol-transition-normal);
+}
+
+/* 基础排版 */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: var(--dancol-spacing-md);
+  color: var(--dancol-text-primary);
+}
+
+h1 { font-size: var(--dancol-text-3xl); }
+h2 { font-size: var(--dancol-text-2xl); }
+h3 { font-size: var(--dancol-text-xl); }
+h4 { font-size: var(--dancol-text-lg); }
+h5 { font-size: var(--dancol-text-base); }
+h6 { font-size: var(--dancol-text-sm); }
+
+p {
+  margin-bottom: var(--dancol-spacing-md);
+  color: var(--dancol-text-secondary);
+}
+
+/* 全局链接样式 - 去除下划线 */
+a {
+  color: var(--dancol-primary);
+  text-decoration: none;
+  transition: color var(--dancol-transition-fast);
+}
+
+a:hover {
+  color: var(--dancol-primary-dark);
+  text-decoration: none; /* 保持无下划线 */
+}
+
+/* 列表样式 */
+ul, ol {
+  margin-bottom: var(--dancol-spacing-md);
+  padding-left: var(--dancol-spacing-lg);
+}
+
+li {
+  margin-bottom: var(--dancol-spacing-xs);
+  color: var(--dancol-text-secondary);
+}
+
+/* 表格样式 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--dancol-spacing-lg);
+}
+
+th, td {
+  padding: var(--dancol-spacing-sm) var(--dancol-spacing-md);
+  text-align: left;
+  border-bottom: 1px solid var(--dancol-border-light);
+}
+
+th {
+  font-weight: 600;
+  color: var(--dancol-text-primary);
+  background-color: var(--dancol-bg-secondary);
+}
+
+/* 代码样式 */
+code {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875em;
+  padding: 2px 4px;
+  background-color: var(--dancol-bg-tertiary);
+  border-radius: var(--dancol-radius-sm);
+  color: var(--dancol-text-primary);
+}
+
+pre {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: var(--dancol-text-sm);
+  padding: var(--dancol-spacing-md);
+  background-color: var(--dancol-bg-secondary);
+  border-radius: var(--dancol-radius-md);
+  overflow-x: auto;
+  margin-bottom: var(--dancol-spacing-lg);
+}
+
+pre code {
+  padding: 0;
+  background: none;
+}
+
+/* 图片样式 */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--dancol-radius-sm);
+}
+
+/* 图片排版工具类 */
+/* 图片对齐 */
+.dancol-img-left {
+  float: left;
+  margin: 0 var(--dancol-spacing-md) var(--dancol-spacing-md) 0;
+}
+
+.dancol-img-right {
+  float: right;
+  margin: 0 0 var(--dancol-spacing-md) var(--dancol-spacing-md);
+}
+
+.dancol-img-center {
+  display: block;
+  margin: var(--dancol-spacing-md) auto;
+}
+
+.dancol-img-inline {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 var(--dancol-spacing-xs);
+}
+
+/* 图片尺寸控制 */
+.dancol-img-xs {
+  max-width: 64px;
+  height: auto;
+}
+
+.dancol-img-sm {
+  max-width: 128px;
+  height: auto;
+}
+
+.dancol-img-md {
+  max-width: 256px;
+  height: auto;
+}
+
+.dancol-img-lg {
+  max-width: 512px;
+  height: auto;
+}
+
+.dancol-img-xl {
+  max-width: 768px;
+  height: auto;
+}
+
+.dancol-img-full {
+  width: 100%;
+  height: auto;
+}
+
+.dancol-img-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dancol-img-contain {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 图片形状 */
+.dancol-img-rounded {
+  border-radius: var(--dancol-radius-md);
+}
+
+.dancol-img-rounded-lg {
+  border-radius: var(--dancol-radius-lg);
+}
+
+.dancol-img-rounded-xl {
+  border-radius: var(--dancol-radius-xl);
+}
+
+.dancol-img-circle {
+  border-radius: 50%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+/* 图片阴影效果 */
+.dancol-img-shadow {
+  box-shadow: var(--dancol-shadow-md);
+}
+
+.dancol-img-shadow-lg {
+  box-shadow: var(--dancol-shadow-lg);
+}
+
+.dancol-img-shadow-hover {
+  transition: box-shadow var(--dancol-transition-normal);
+}
+
+.dancol-img-shadow-hover:hover {
+  box-shadow: var(--dancol-shadow-lg);
+}
+
+/* 图片边框 */
+.dancol-img-border {
+  border: 2px solid var(--dancol-border-light);
+}
+
+.dancol-img-border-primary {
+  border: 2px solid var(--dancol-primary);
+}
+
+.dancol-img-border-thick {
+  border: 4px solid var(--dancol-border-medium);
+  padding: var(--dancol-spacing-xs);
+  background-color: var(--dancol-bg-primary);
+}
+
+/* 图片滤镜效果 */
+.dancol-img-grayscale {
+  filter: grayscale(100%);
+  transition: filter var(--dancol-transition-normal);
+}
+
+.dancol-img-grayscale:hover {
+  filter: grayscale(0%);
+}
+
+.dancol-img-sepia {
+  filter: sepia(80%);
+}
+
+.dancol-img-blur {
+  filter: blur(2px);
+  transition: filter var(--dancol-transition-normal);
+}
+
+.dancol-img-blur:hover {
+  filter: blur(0);
+}
+
+.dancol-img-brightness {
+  filter: brightness(1.1);
+}
+
+/* 图片容器 */
+.dancol-img-container {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.dancol-img-container img {
+  transition: transform var(--dancol-transition-normal);
+}
+
+.dancol-img-container:hover img {
+  transform: scale(1.05);
+}
+
+/* 图片网格布局 */
+.dancol-img-grid {
+  display: grid;
+  gap: var(--dancol-spacing-md);
+  margin: var(--dancol-spacing-lg) 0;
+}
+
+.dancol-img-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.dancol-img-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.dancol-img-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.dancol-img-grid-auto {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* 图片画廊样式 */
+.dancol-img-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dancol-spacing-sm);
+  margin: var(--dancol-spacing-lg) 0;
+}
+
+.dancol-img-gallery-item {
+  flex: 1 1 calc(33.333% - var(--dancol-spacing-sm));
+  min-width: 150px;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--dancol-radius-md);
+  box-shadow: var(--dancol-shadow-sm);
+  transition: transform var(--dancol-transition-fast), box-shadow var(--dancol-transition-fast);
+}
+
+.dancol-img-gallery-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--dancol-shadow-lg);
+}
+
+.dancol-img-gallery-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* 图片叠加效果 */
+.dancol-img-overlay {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--dancol-radius-md);
+}
+
+.dancol-img-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(107, 163, 214, 0.1), rgba(184, 212, 240, 0.2));
+  opacity: 0;
+  transition: opacity var(--dancol-transition-normal);
+}
+
+.dancol-img-overlay:hover::after {
+  opacity: 1;
+}
+
+/* 头像样式 */
+.dancol-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--dancol-bg-primary);
+  box-shadow: var(--dancol-shadow-sm);
+}
+
+.dancol-avatar-xs {
+  width: 24px;
+  height: 24px;
+}
+
+.dancol-avatar-sm {
+  width: 32px;
+  height: 32px;
+}
+
+.dancol-avatar-md {
+  width: 48px;
+  height: 48px;
+}
+
+.dancol-avatar-lg {
+  width: 64px;
+  height: 64px;
+}
+
+.dancol-avatar-xl {
+  width: 96px;
+  height: 96px;
+}
+
+.dancol-avatar-2xl {
+  width: 128px;
+  height: 128px;
+}
+
+/* 分割线 */
+hr {
+  border: none;
+  height: 1px;
+  background-color: var(--dancol-border-light);
+  margin: var(--dancol-spacing-lg) 0;
+}
+
+/* 引用样式 */
+blockquote {
+  padding: var(--dancol-spacing-md);
+  margin: var(--dancol-spacing-lg) 0;
+  border-left: 4px solid var(--dancol-primary);
+  background-color: var(--dancol-bg-secondary);
+  border-radius: 0 var(--dancol-radius-md) var(--dancol-radius-md) 0;
+}
+
+blockquote p {
+  margin-bottom: 0;
+  font-style: italic;
+  color: var(--dancol-text-secondary);
+}
+
+/* 布局系统 */
+.dancol-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--dancol-spacing-md);
+}
+
+.dancol-container-fluid {
+  width: 100%;
+  padding: 0 var(--dancol-spacing-md);
+}
+
+/* 网格系统 */
+.dancol-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 calc(-1 * var(--dancol-spacing-sm));
+}
+
+.dancol-col {
+  flex: 1;
+  padding: 0 var(--dancol-spacing-sm);
+}
+
+.dancol-col-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+.dancol-col-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+.dancol-col-3 { flex: 0 0 25%; max-width: 25%; }
+.dancol-col-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+.dancol-col-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+.dancol-col-6 { flex: 0 0 50%; max-width: 50%; }
+.dancol-col-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+.dancol-col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+.dancol-col-9 { flex: 0 0 75%; max-width: 75%; }
+.dancol-col-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+.dancol-col-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+.dancol-col-12 { flex: 0 0 100%; max-width: 100%; }
+
+/* Flexbox工具类 */
+.dancol-d-flex { display: flex; }
+.dancol-d-inline-flex { display: inline-flex; }
+.dancol-d-block { display: block; }
+.dancol-d-inline-block { display: inline-block; }
+.dancol-d-none { display: none; }
+
+.dancol-flex-row { flex-direction: row; }
+.dancol-flex-column { flex-direction: column; }
+.dancol-flex-wrap { flex-wrap: wrap; }
+.dancol-flex-nowrap { flex-wrap: nowrap; }
+
+.dancol-justify-start { justify-content: flex-start; }
+.dancol-justify-center { justify-content: center; }
+.dancol-justify-end { justify-content: flex-end; }
+.dancol-justify-between { justify-content: space-between; }
+.dancol-justify-around { justify-content: space-around; }
+
+.dancol-align-start { align-items: flex-start; }
+.dancol-align-center { align-items: center; }
+.dancol-align-end { align-items: flex-end; }
+.dancol-align-stretch { align-items: stretch; }
+
+/* 间距工具类 */
+.dancol-m-0 { margin: 0; }
+.dancol-m-1 { margin: var(--dancol-spacing-xs); }
+.dancol-m-2 { margin: var(--dancol-spacing-sm); }
+.dancol-m-3 { margin: var(--dancol-spacing-md); }
+.dancol-m-4 { margin: var(--dancol-spacing-lg); }
+.dancol-m-5 { margin: var(--dancol-spacing-xl); }
+
+.dancol-p-0 { padding: 0; }
+.dancol-p-1 { padding: var(--dancol-spacing-xs); }
+.dancol-p-2 { padding: var(--dancol-spacing-sm); }
+.dancol-p-3 { padding: var(--dancol-spacing-md); }
+.dancol-p-4 { padding: var(--dancol-spacing-lg); }
+.dancol-p-5 { padding: var(--dancol-spacing-xl); }
+
+/* 文本工具类 */
+/* 文本对齐 */
+.dancol-text-left { text-align: left; }
+.dancol-text-center { text-align: center; }
+.dancol-text-right { text-align: right; }
+.dancol-text-justify { text-align: justify; }
+
+/* 文本颜色 */
+.dancol-text-primary { color: var(--dancol-text-primary); }
+.dancol-text-secondary { color: var(--dancol-text-secondary); }
+.dancol-text-muted { color: var(--dancol-text-muted); }
+.dancol-text-inverse { color: var(--dancol-text-inverse); }
+.dancol-text-success { color: var(--dancol-success); }
+.dancol-text-warning { color: var(--dancol-warning); }
+.dancol-text-error { color: var(--dancol-error); }
+.dancol-text-info { color: var(--dancol-info); }
+
+/* 文本大小 */
+.dancol-text-xs { font-size: var(--dancol-text-xs); }
+.dancol-text-sm { font-size: var(--dancol-text-sm); }
+.dancol-text-base { font-size: var(--dancol-text-base); }
+.dancol-text-lg { font-size: var(--dancol-text-lg); }
+.dancol-text-xl { font-size: var(--dancol-text-xl); }
+
+/* 文本样式 */
+.dancol-text-bold { font-weight: 700; }
+.dancol-text-semibold { font-weight: 600; }
+.dancol-text-medium { font-weight: 500; }
+.dancol-text-normal { font-weight: 400; }
+.dancol-text-light { font-weight: 300; }
+
+.dancol-text-italic { font-style: italic; }
+.dancol-text-underline { text-decoration: underline; }
+.dancol-text-line-through { text-decoration: line-through; }
+.dancol-text-no-decoration { text-decoration: none; }
+
+/* 文本转换 */
+.dancol-text-uppercase { text-transform: uppercase; }
+.dancol-text-lowercase { text-transform: lowercase; }
+.dancol-text-capitalize { text-transform: capitalize; }
+.dancol-text-normal-case { text-transform: none; }
+
+/* 文本换行 */
+.dancol-text-nowrap { white-space: nowrap; }
+.dancol-text-wrap { white-space: normal; }
+.dancol-text-break { word-break: break-all; }
+.dancol-text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dancol-text-xs { font-size: var(--dancol-text-xs); }
+.dancol-text-sm { font-size: var(--dancol-text-sm); }
+.dancol-text-base { font-size: var(--dancol-text-base); }
+.dancol-text-lg { font-size: var(--dancol-text-lg); }
+.dancol-text-xl { font-size: var(--dancol-text-xl); }
+.dancol-text-2xl { font-size: var(--dancol-text-2xl); }
+.dancol-text-3xl { font-size: var(--dancol-text-3xl); }
+
+/* 表格样式 */
+.dancol-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--dancol-spacing-lg);
+  background-color: var(--dancol-bg-primary);
+  border-radius: var(--dancol-radius-md);
+  overflow: hidden;
+  box-shadow: var(--dancol-shadow-sm);
+}
+
+.dancol-table th {
+  background-color: var(--dancol-table-header-bg, var(--dancol-primary));
+  color: var(--dancol-table-header-color, var(--dancol-text-inverse));
+  font-weight: 600;
+  text-align: left;
+  padding: var(--dancol-spacing-md);
+  border-bottom: 2px solid var(--dancol-primary-dark);
+  font-size: var(--dancol-text-sm);
+  letter-spacing: 0.025em;
+  transition: background-color var(--dancol-transition-normal);
+}
+
+.dancol-table td {
+  padding: var(--dancol-spacing-md);
+  border-bottom: 1px solid var(--dancol-border-light);
+  vertical-align: middle;
+  font-size: var(--dancol-text-sm);
+  color: var(--dancol-text-primary);
+}
+
+.dancol-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 带边框表格 */
+.dancol-table-bordered {
+  border: 1px solid var(--dancol-border-medium);
+}
+
+.dancol-table-bordered th,
+.dancol-table-bordered td {
+  border: 1px solid var(--dancol-border-light);
+}
+
+.dancol-table-bordered th {
+  border-bottom: 2px solid var(--dancol-primary-dark);
+}
+
+/* 条纹表格 */
+.dancol-table-striped tbody tr:nth-child(even) {
+  background-color: var(--dancol-bg-secondary);
+}
+
+/* 悬停效果表格 */
+.dancol-table-hover tbody tr {
+  transition: background-color var(--dancol-transition-fast);
+}
+
+.dancol-table-hover tbody tr:hover {
+  background-color: var(--dancol-accent);
+  cursor: pointer;
+}
+
+/* 紧凑表格 */
+.dancol-table-sm th,
+.dancol-table-sm td {
+  padding: var(--dancol-spacing-sm);
+  font-size: var(--dancol-text-xs);
+}
+
+/* 响应式表格容器 */
+.dancol-table-responsive {
+  overflow-x: auto;
+  margin-bottom: var(--dancol-spacing-lg);
+  border-radius: var(--dancol-radius-md);
+  box-shadow: var(--dancol-shadow-sm);
+}
+
+.dancol-table-responsive .dancol-table {
+  margin-bottom: 0;
+  min-width: 600px;
+}
+
+/* 表格内的按钮优化 */
+.dancol-table .dancol-btn {
+  margin-right: var(--dancol-spacing-xs);
+}
+
+.dancol-table .dancol-btn:last-child {
+  margin-right: 0;
+}
+
+/* 表格内的徽章优化 */
+.dancol-table .dancol-badge {
+  font-size: var(--dancol-text-xs);
+  padding: var(--dancol-spacing-xs) var(--dancol-spacing-sm);
+}
+
+/* 表格内的头像优化 */
+.dancol-table .dancol-avatar {
+  margin-right: var(--dancol-spacing-sm);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .dancol-container {
+    padding: 0 var(--dancol-spacing-md);
+    max-width: 100%;
+  }
+
+  .dancol-row {
+    margin: 0 calc(-1 * var(--dancol-spacing-xs));
+  }
+
+  .dancol-col {
+    padding: 0 var(--dancol-spacing-xs);
+  }
+
+  /* 移动端列宽调整 */
+  .dancol-col-sm-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+  .dancol-col-sm-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+  .dancol-col-sm-3 { flex: 0 0 25%; max-width: 25%; }
+  .dancol-col-sm-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+  .dancol-col-sm-6 { flex: 0 0 50%; max-width: 50%; }
+  .dancol-col-sm-12 { flex: 0 0 100%; max-width: 100%; }
+
+  /* 移动端图片排版调整 */
+  .dancol-img-left,
+  .dancol-img-right {
+    float: none;
+    display: block;
+    margin: var(--dancol-spacing-md) auto;
+  }
+
+  .dancol-img-grid-2,
+  .dancol-img-grid-3,
+  .dancol-img-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .dancol-img-grid-auto {
+    grid-template-columns: 1fr;
+  }
+
+  .dancol-img-gallery-item {
+    flex: 1 1 100%;
+    min-width: auto;
+  }
+
+  .dancol-img-gallery-item img {
+    height: 150px;
+  }
+
+  /* 移动端图片尺寸调整 */
+  .dancol-img-lg,
+  .dancol-img-xl {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dancol-container {
+    padding: 0 var(--dancol-spacing-sm);
+  }
+
+  .dancol-container-fluid {
+    padding: 0 var(--dancol-spacing-sm);
+  }
+
+  /* 超小屏幕下强制单列布局 */
+  .dancol-col-1, .dancol-col-2, .dancol-col-3, .dancol-col-4,
+  .dancol-col-5, .dancol-col-6, .dancol-col-7, .dancol-col-8,
+  .dancol-col-9, .dancol-col-10, .dancol-col-11, .dancol-col-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  /* 超小屏幕图片调整 */
+  .dancol-img-gallery {
+    gap: var(--dancol-spacing-xs);
+  }
+
+  .dancol-img-gallery-item img {
+    height: 120px;
+  }
+
+  .dancol-img-grid {
+    gap: var(--dancol-spacing-xs);
+  }
+
+  /* 头像在超小屏幕的调整 */
+  .dancol-avatar-lg,
+  .dancol-avatar-xl,
+  .dancol-avatar-2xl {
+    width: 64px;
+    height: 64px;
+  }
+
+  /* 表格在超小屏幕的调整 */
+  .dancol-table th,
+  .dancol-table td {
+    padding: var(--dancol-spacing-xs);
+    font-size: var(--dancol-text-xs);
+  }
+
+  .dancol-table .dancol-btn {
+    padding: var(--dancol-spacing-xs);
+    font-size: var(--dancol-text-xs);
+  }
+
+  .dancol-table-responsive .dancol-table {
+    min-width: 500px;
+  }
+}

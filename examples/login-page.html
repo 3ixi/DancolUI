@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录页面示例 - Dancol UI Framework</title>
+
+    <!-- 防闪烁主题预加载脚本 -->
+    <script>
+        (function() {
+            // 立即从localStorage读取主题设置
+            try {
+                const savedTheme = localStorage.getItem('dancol-theme');
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else {
+                    // 默认主题
+                    document.documentElement.setAttribute('data-theme', 'light-blue');
+                }
+            } catch (e) {
+                // 如果localStorage不可用，使用默认主题
+                document.documentElement.setAttribute('data-theme', 'light-blue');
+            }
+        })();
+    </script>
+
+    <!-- Dancol CSS -->
+    <link rel="stylesheet" href="../assets/css/dancol-core.css">
+    <link rel="stylesheet" href="../assets/css/dancol-themes.css">
+    <link rel="stylesheet" href="../assets/css/dancol-components.css">
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <style>
+        /* 登录页面专用样式 */
+        .login-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--dancol-primary-light) 0%, var(--dancol-accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--dancol-spacing-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景装饰图片 */
+        .bg-decoration {
+            position: absolute;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .bg-decoration-1 {
+            top: 10%;
+            left: 10%;
+            transform: rotate(-15deg);
+        }
+
+        .bg-decoration-2 {
+            bottom: 15%;
+            right: 15%;
+            transform: rotate(25deg);
+        }
+
+        .bg-decoration-3 {
+            top: 60%;
+            left: 5%;
+            transform: rotate(-45deg);
+        }
+
+        /* 登录卡片 */
+        .login-card {
+            background: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-xl);
+            box-shadow: var(--dancol-shadow-lg);
+            padding: var(--dancol-spacing-xl);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 品牌Logo区域 */
+        .brand-section {
+            text-align: center;
+            margin-bottom: var(--dancol-spacing-xl);
+        }
+
+        .brand-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--dancol-spacing-md);
+            background: linear-gradient(45deg, var(--dancol-primary), var(--dancol-primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: var(--dancol-shadow-md);
+        }
+
+        .brand-title {
+            font-size: var(--dancol-text-2xl);
+            font-weight: 700;
+            color: var(--dancol-text-primary);
+            margin-bottom: var(--dancol-spacing-xs);
+        }
+
+        .brand-subtitle {
+            color: var(--dancol-text-secondary);
+            font-size: var(--dancol-text-sm);
+        }
+
+        /* 表单样式 */
+        .login-form {
+            margin-bottom: var(--dancol-spacing-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--dancol-spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--dancol-spacing-xs);
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--dancol-spacing-md);
+            border: 2px solid var(--dancol-border-light);
+            border-radius: var(--dancol-radius-md);
+            font-size: var(--dancol-text-base);
+            transition: border-color var(--dancol-transition-fast);
+            background-color: var(--dancol-bg-primary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--dancol-primary);
+            box-shadow: 0 0 0 3px rgba(107, 163, 214, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: var(--dancol-spacing-md);
+            background: linear-gradient(45deg, var(--dancol-primary), var(--dancol-primary-light));
+            color: white;
+            border: none;
+            border-radius: var(--dancol-radius-md);
+            font-size: var(--dancol-text-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform var(--dancol-transition-fast), box-shadow var(--dancol-transition-fast);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--dancol-shadow-lg);
+        }
+
+        /* 用户头像展示区域 */
+        .user-avatars {
+            text-align: center;
+            margin-bottom: var(--dancol-spacing-lg);
+        }
+
+        .avatars-title {
+            font-size: var(--dancol-text-sm);
+            color: var(--dancol-text-secondary);
+            margin-bottom: var(--dancol-spacing-md);
+        }
+
+        .avatar-list {
+            display: flex;
+            justify-content: center;
+            gap: var(--dancol-spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .avatar-item {
+            position: relative;
+            cursor: pointer;
+            transition: transform var(--dancol-transition-fast);
+        }
+
+        .avatar-item:hover {
+            transform: scale(1.1);
+        }
+
+        .avatar-item.active {
+            transform: scale(1.15);
+        }
+
+        .avatar-item.active::after {
+            content: '✓';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background: var(--dancol-success);
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 页脚链接 */
+        .login-footer {
+            text-align: center;
+            padding-top: var(--dancol-spacing-lg);
+            border-top: 1px solid var(--dancol-border-light);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--dancol-spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-size: var(--dancol-text-sm);
+            transition: color var(--dancol-transition-fast);
+        }
+
+        .footer-link:hover {
+            color: var(--dancol-primary);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .login-container {
+                padding: var(--dancol-spacing-md);
+            }
+
+            .login-card {
+                padding: var(--dancol-spacing-lg);
+            }
+
+            .brand-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .bg-decoration {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: var(--dancol-spacing-md);
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: var(--dancol-spacing-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+
+        <div class="login-card">
+            <!-- 品牌Logo区域 -->
+            <div class="brand-section">
+                <div class="brand-logo">D</div>
+                <h1 class="brand-title">Dancol UI</h1>
+                <p class="brand-subtitle">优雅的前端UI框架</p>
+            </div>
+
+            <!-- 用户头像选择 -->
+            <div class="user-avatars">
+                <p class="avatars-title">选择您的头像</p>
+                <div class="avatar-list">
+                    <div class="avatar-item active" onclick="selectAvatar(this)">
+                        <img src="../assets/images/avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-md" alt="头像1">
+                    </div>
+                    <div class="avatar-item" onclick="selectAvatar(this)">
+                        <img src="../assets/images/avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-md" alt="头像2">
+                    </div>
+                    <div class="avatar-item" onclick="selectAvatar(this)">
+                        <img src="../assets/images/avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-md" alt="头像3">
+                    </div>
+                    <div class="avatar-item" onclick="selectAvatar(this)">
+                        <img src="../assets/images/avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-md" alt="头像4">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 登录表单 -->
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="username">用户名</label>
+                    <input type="text" id="username" class="form-input" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">密码</label>
+                    <input type="password" id="password" class="form-input" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="login-btn">登录</button>
+            </form>
+
+            <!-- 页脚链接 -->
+            <div class="login-footer">
+                <div class="footer-links">
+                    <a href="#" class="footer-link">忘记密码？</a>
+                    <a href="#" class="footer-link">注册账号</a>
+                    <a href="../api-reference.html" class="footer-link">返回文档</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dancol JS -->
+    <script src="../assets/js/dancol-core.js"></script>
+    <script src="../assets/js/dancol-theme.js"></script>
+    <script src="../assets/js/dancol-toast.js"></script>
+
+    <script>
+        // 头像选择功能
+        function selectAvatar(element) {
+            // 移除所有活跃状态
+            document.querySelectorAll('.avatar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            // 添加活跃状态到当前选中的头像
+            element.classList.add('active');
+        }
+
+        // 登录处理
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username && password) {
+                // 显示成功消息
+                if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                    Dancol.Toast.success('登录成功！欢迎使用 Dancol UI');
+                } else {
+                    alert('登录成功！欢迎使用 Dancol UI');
+                }
+                
+                // 模拟登录成功后的跳转
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1500);
+            }
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加一些动画效果
+            const card = document.querySelector('.login-card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

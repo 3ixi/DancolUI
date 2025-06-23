@@ -1,0 +1,343 @@
+/**
+ * Dancol UI Framework - 丹青UI框架
+ * 主题样式文件
+ * 版本: 1.0.0
+ * 作者: Dancol Team
+ * 描述: 提供多种主题配色方案
+ */
+
+/* 淡蓝主题 - 默认主题 */
+[data-theme="light-blue"], :root {
+  --dancol-primary: #6ba3d6;
+  --dancol-primary-light: #a8c8e1;
+  --dancol-primary-dark: #4a7ba7;
+  --dancol-secondary: #b8d4f0;
+  --dancol-accent: #f0f7ff;
+  
+  --dancol-text-primary: #2c3e50;
+  --dancol-text-secondary: #5a6c7d;
+  --dancol-text-muted: #8492a6;
+  --dancol-text-inverse: #ffffff;
+  
+  --dancol-bg-primary: #ffffff;
+  --dancol-bg-secondary: #f8fafc;
+  --dancol-bg-tertiary: #e2e8f0;
+  
+  --dancol-border-light: #e2e8f0;
+  --dancol-border-medium: #cbd5e0;
+  --dancol-border-dark: #a0aec0;
+
+  /* 表格主题色 */
+  --dancol-table-header-bg: var(--dancol-primary);
+  --dancol-table-header-color: var(--dancol-text-inverse);
+}
+
+/* 淡绿主题 */
+[data-theme="light-green"] {
+  --dancol-primary: #68d391;
+  --dancol-primary-light: #9ae6b4;
+  --dancol-primary-dark: #48bb78;
+  --dancol-secondary: #c6f6d5;
+  --dancol-accent: #f0fff4;
+  
+  --dancol-text-primary: #1a202c;
+  --dancol-text-secondary: #4a5568;
+  --dancol-text-muted: #718096;
+  --dancol-text-inverse: #ffffff;
+  
+  --dancol-bg-primary: #ffffff;
+  --dancol-bg-secondary: #f7fafc;
+  --dancol-bg-tertiary: #edf2f7;
+  
+  --dancol-border-light: #e2e8f0;
+  --dancol-border-medium: #cbd5e0;
+  --dancol-border-dark: #a0aec0;
+
+  /* 表格主题色 */
+  --dancol-table-header-bg: var(--dancol-primary);
+  --dancol-table-header-color: var(--dancol-text-inverse);
+}
+
+/* 米黄主题 */
+[data-theme="cream"] {
+  --dancol-primary: #d69e2e;
+  --dancol-primary-light: #ecc94b;
+  --dancol-primary-dark: #b7791f;
+  --dancol-secondary: #faf089;
+  --dancol-accent: #fffff0;
+  
+  --dancol-text-primary: #2d3748;
+  --dancol-text-secondary: #4a5568;
+  --dancol-text-muted: #718096;
+  --dancol-text-inverse: #ffffff;
+  
+  --dancol-bg-primary: #fffef7;
+  --dancol-bg-secondary: #fefcf0;
+  --dancol-bg-tertiary: #faf5e4;
+  
+  --dancol-border-light: #f7e6cc;
+  --dancol-border-medium: #e6d3a3;
+  --dancol-border-dark: #d4c078;
+
+  /* 表格主题色 */
+  --dancol-table-header-bg: var(--dancol-primary);
+  --dancol-table-header-color: var(--dancol-text-inverse);
+}
+
+/* 柔和主题（温暖如阳光） */
+[data-theme="warm"] {
+  --dancol-primary: #ed8936;
+  --dancol-primary-light: #f6ad55;
+  --dancol-primary-dark: #dd6b20;
+  --dancol-secondary: #fed7aa;
+  --dancol-accent: #fffaf0;
+
+  --dancol-text-primary: #2d3748;
+  --dancol-text-secondary: #4a5568;
+  --dancol-text-muted: #718096;
+  --dancol-text-inverse: #ffffff;
+
+  --dancol-bg-primary: #fffbf5;
+  --dancol-bg-secondary: #fef5e7;
+  --dancol-bg-tertiary: #feebc8;
+
+  --dancol-border-light: #fbd38d;
+  --dancol-border-medium: #f6ad55;
+  --dancol-border-dark: #ed8936;
+
+  /* 表格主题色 */
+  --dancol-table-header-bg: var(--dancol-primary);
+  --dancol-table-header-color: var(--dancol-text-inverse);
+}
+
+/* 深色主题（夜晚模式） */
+[data-theme="dark"] {
+  --dancol-primary: #60a5fa;
+  --dancol-primary-light: #93c5fd;
+  --dancol-primary-dark: #3b82f6;
+  --dancol-secondary: #374151;
+  --dancol-accent: #1f2937;
+
+  --dancol-text-primary: #f9fafb;
+  --dancol-text-secondary: #d1d5db;
+  --dancol-text-muted: #9ca3af;
+  --dancol-text-inverse: #1f2937;
+
+  --dancol-bg-primary: #111827;
+  --dancol-bg-secondary: #1f2937;
+  --dancol-bg-tertiary: #374151;
+
+  --dancol-border-light: #374151;
+  --dancol-border-medium: #4b5563;
+  --dancol-border-dark: #6b7280;
+
+  /* 深色模式下的状态颜色调整 */
+  --dancol-success: #10b981;
+  --dancol-warning: #f59e0b;
+  --dancol-error: #ef4444;
+  --dancol-info: #3b82f6;
+
+  /* 表格主题色 */
+  --dancol-table-header-bg: var(--dancol-primary);
+  --dancol-table-header-color: var(--dancol-text-inverse);
+}
+
+/* 主题切换动画 */
+* {
+  transition: 
+    background-color var(--dancol-transition-normal),
+    border-color var(--dancol-transition-normal),
+    color var(--dancol-transition-normal),
+    box-shadow var(--dancol-transition-normal);
+}
+
+/* 主题切换器样式 */
+.dancol-theme-switcher {
+  position: relative;
+  display: inline-block;
+}
+
+.dancol-theme-switcher-button {
+  display: flex;
+  align-items: center;
+  gap: var(--dancol-spacing-sm);
+  padding: var(--dancol-spacing-sm) var(--dancol-spacing-md);
+  background-color: var(--dancol-bg-secondary);
+  border: 1px solid var(--dancol-border-medium);
+  border-radius: var(--dancol-radius-md);
+  color: var(--dancol-text-primary);
+  cursor: pointer;
+  font-size: var(--dancol-text-sm);
+  transition: all var(--dancol-transition-fast);
+}
+
+.dancol-theme-switcher-button:hover {
+  background-color: var(--dancol-bg-tertiary);
+  border-color: var(--dancol-border-dark);
+}
+
+.dancol-theme-switcher-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--dancol-bg-primary);
+  border: 1px solid var(--dancol-border-medium);
+  border-radius: var(--dancol-radius-md);
+  box-shadow: var(--dancol-shadow-lg);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all var(--dancol-transition-fast);
+}
+
+.dancol-theme-switcher-dropdown.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dancol-theme-option {
+  display: flex;
+  align-items: center;
+  gap: var(--dancol-spacing-sm);
+  padding: var(--dancol-spacing-sm) var(--dancol-spacing-md);
+  cursor: pointer;
+  transition: background-color var(--dancol-transition-fast);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: var(--dancol-text-sm);
+  color: var(--dancol-text-primary);
+}
+
+.dancol-theme-option:hover {
+  background-color: var(--dancol-bg-secondary);
+}
+
+.dancol-theme-option.active {
+  background-color: var(--dancol-primary);
+  color: var(--dancol-text-inverse);
+}
+
+/* 为不同主题选项设置固定的文字颜色，确保在所有主题下都清晰可见 */
+.dancol-theme-option[data-theme="light-blue"] .dancol-theme-name {
+  color: #2c3e50 !important;
+}
+
+.dancol-theme-option[data-theme="light-green"] .dancol-theme-name {
+  color: #2c3e50 !important;
+}
+
+.dancol-theme-option[data-theme="cream"] .dancol-theme-name {
+  color: #2c3e50 !important;
+}
+
+.dancol-theme-option[data-theme="warm"] .dancol-theme-name {
+  color: #2c3e50 !important;
+}
+
+.dancol-theme-option[data-theme="dark"] .dancol-theme-name {
+  color: #1f2937 !important;
+}
+
+/* 当主题选项被激活时，使用反色文字 */
+.dancol-theme-option.active .dancol-theme-name {
+  color: var(--dancol-text-inverse) !important;
+}
+
+.dancol-theme-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--dancol-border-medium);
+}
+
+/* 主题颜色预览 */
+.dancol-theme-color.light-blue {
+  background-color: #6ba3d6;
+}
+
+.dancol-theme-color.light-green {
+  background-color: #68d391;
+}
+
+.dancol-theme-color.cream {
+  background-color: #d69e2e;
+}
+
+.dancol-theme-color.warm {
+  background-color: #ed8936;
+}
+
+.dancol-theme-color.dark {
+  background-color: #60a5fa;
+}
+
+/* 主题切换图标 */
+.dancol-theme-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* 响应式主题切换器 */
+@media (max-width: 768px) {
+  .dancol-theme-switcher {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .dancol-theme-switcher-button {
+    padding: var(--dancol-spacing-xs) var(--dancol-spacing-sm);
+    font-size: var(--dancol-text-xs);
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dancol-theme-switcher-dropdown {
+    left: 0;
+    right: 0;
+    min-width: 180px;
+  }
+
+  .dancol-theme-option {
+    padding: var(--dancol-spacing-xs) var(--dancol-spacing-sm);
+    font-size: var(--dancol-text-xs);
+  }
+
+  .dancol-theme-color {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dancol-theme-switcher {
+    max-width: 180px;
+  }
+
+  .dancol-theme-switcher-button {
+    padding: var(--dancol-spacing-xs);
+    font-size: 11px;
+    gap: var(--dancol-spacing-xs);
+  }
+
+  /* 移动端主题切换器应该显示主题文字 */
+  .dancol-theme-name {
+    display: block;
+    font-size: 11px;
+  }
+
+  .dancol-theme-color {
+    width: 12px;
+    height: 12px;
+  }
+
+  .dancol-theme-icon {
+    width: 12px;
+    height: 12px;
+  }
+}

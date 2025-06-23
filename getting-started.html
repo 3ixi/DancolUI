@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速开始 - Dancol UI Framework</title>
+
+    <!-- 防闪烁主题预加载脚本 -->
+    <script>
+        (function() {
+            // 立即从localStorage读取主题设置
+            try {
+                const savedTheme = localStorage.getItem('dancol-theme');
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else {
+                    // 默认主题
+                    document.documentElement.setAttribute('data-theme', 'light-blue');
+                }
+            } catch (e) {
+                // 如果localStorage不可用，使用默认主题
+                document.documentElement.setAttribute('data-theme', 'light-blue');
+            }
+        })();
+    </script>
+
+    <!-- Dancol CSS -->
+    <link rel="stylesheet" href="assets/css/dancol-core.css">
+    <link rel="stylesheet" href="assets/css/dancol-themes.css">
+    <link rel="stylesheet" href="assets/css/dancol-components.css">
+    
+    <style>
+        .doc-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .doc-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--dancol-border-light);
+        }
+        
+        .doc-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .doc-subtitle {
+            font-size: 1.2rem;
+            color: var(--dancol-text-secondary);
+        }
+        
+        .doc-section {
+            margin: 3rem 0;
+        }
+        
+        .doc-section h2 {
+            font-size: 2rem;
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--dancol-primary);
+        }
+        
+        .doc-section h3 {
+            font-size: 1.5rem;
+            color: var(--dancol-text-primary);
+            margin: 2rem 0 1rem;
+        }
+        
+        .code-block {
+            background-color: var(--dancol-bg-tertiary);
+            border: 1px solid var(--dancol-border-medium);
+            border-radius: var(--dancol-radius-md);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-block pre {
+            margin: 0;
+            background: none;
+            padding: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .code-block code {
+            background: none;
+            padding: 0;
+            font-size: inherit;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--dancol-bg-primary);
+            border: 1px solid var(--dancol-border-medium);
+            border-radius: var(--dancol-radius-sm);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            color: var(--dancol-text-primary);
+            cursor: pointer;
+            transition: all var(--dancol-transition-fast);
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--dancol-primary);
+            color: var(--dancol-text-inverse);
+        }
+        
+        .step-card {
+            background-color: var(--dancol-bg-secondary);
+            border: 1px solid var(--dancol-border-light);
+            border-radius: var(--dancol-radius-lg);
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--dancol-primary);
+            color: var(--dancol-text-inverse);
+            border-radius: 50%;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .step-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .file-structure {
+            background-color: var(--dancol-bg-primary);
+            border: 1px solid var(--dancol-border-light);
+            border-radius: var(--dancol-radius-md);
+            padding: 1.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .file-structure .folder {
+            color: var(--dancol-primary);
+            font-weight: 600;
+        }
+        
+        .file-structure .file {
+            color: var(--dancol-text-secondary);
+        }
+        
+        .navbar {
+            background-color: var(--dancol-bg-primary);
+            border-bottom: 1px solid var(--dancol-border-light);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--dancol-text-primary);
+        }
+        
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--dancol-transition-fast);
+        }
+        
+        .nav-link:hover {
+            color: var(--dancol-primary);
+        }
+        
+        .nav-link.active {
+            color: var(--dancol-primary);
+        }
+        
+        .alert-tip {
+            background-color: rgba(66, 153, 225, 0.1);
+            border: 1px solid var(--dancol-info);
+            border-left: 4px solid var(--dancol-info);
+            border-radius: var(--dancol-radius-md);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .alert-tip .tip-icon {
+            color: var(--dancol-info);
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .next-steps {
+            background-color: var(--dancol-bg-secondary);
+            border-radius: var(--dancol-radius-lg);
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .next-steps h3 {
+            color: var(--dancol-text-primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .next-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .next-step-card {
+            background-color: var(--dancol-bg-primary);
+            border: 1px solid var(--dancol-border-light);
+            border-radius: var(--dancol-radius-md);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform var(--dancol-transition-fast);
+        }
+        
+        .next-step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--dancol-shadow-md);
+        }
+        
+        .next-step-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .next-step-title {
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .next-step-desc {
+            color: var(--dancol-text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* 移动端汉堡菜单样式 */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--dancol-text-primary);
+            font-size: 1.5rem;
+        }
+
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .mobile-nav-content {
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100%;
+            background-color: var(--dancol-bg-primary);
+            box-shadow: var(--dancol-shadow-lg);
+            transition: right 0.3s ease-in-out;
+            overflow-y: auto;
+        }
+
+        .mobile-nav-overlay.active .mobile-nav-content {
+            right: 0;
+        }
+
+        .mobile-nav-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--dancol-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-nav-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--dancol-text-primary);
+            font-size: 1.5rem;
+        }
+
+        .mobile-nav-menu {
+            padding: 1rem 0;
+        }
+
+        .mobile-nav-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--dancol-transition-fast);
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-menu a:hover,
+        .mobile-nav-menu a.active {
+            color: var(--dancol-primary);
+            background-color: var(--dancol-bg-secondary);
+            border-left-color: var(--dancol-primary);
+        }
+
+        .mobile-theme-section {
+            padding: 1rem;
+            border-top: 1px solid var(--dancol-border-light);
+        }
+
+        .mobile-theme-section h4 {
+            margin-bottom: 1rem;
+            color: var(--dancol-text-primary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .navbar-nav > a.nav-link {
+                display: none;
+            }
+
+            .navbar-nav .dancol-theme-switcher {
+                display: none;
+            }
+
+            .navbar-content {
+                padding: 0 1rem;
+            }
+
+            .doc-container {
+                padding: 1rem;
+            }
+
+            .doc-title {
+                font-size: 2rem;
+            }
+
+            .step-card {
+                padding: 1.5rem;
+            }
+
+            .next-steps-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .doc-title {
+                font-size: 1.75rem;
+            }
+
+            .step-card {
+                padding: 1rem;
+            }
+
+            .code-block {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="dancol-container">
+            <div class="navbar-content">
+                <a href="index.html" class="navbar-brand">
+                    <h1 style="margin: 0; font-size: 1.5rem; font-weight: 700;">Dancol UI</h1>
+                    <span style="font-size: 0.875rem; color: var(--dancol-text-muted);">丹青</span>
+                </a>
+                <div class="navbar-nav">
+                    <a href="index.html" class="nav-link">首页</a>
+                    <a href="getting-started.html" class="nav-link active">快速开始</a>
+                    <a href="api-reference.html" class="nav-link">API文档</a>
+                    <a href="examples.html" class="nav-link">示例</a>
+                    <div class="dancol-theme-switcher">
+                        <button class="dancol-theme-switcher-button">
+                            <span class="dancol-theme-color light-blue"></span>
+                            <span class="dancol-theme-name">淡蓝主题</span>
+                            <svg class="dancol-theme-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="dancol-theme-switcher-dropdown"></div>
+                    </div>
+                    <button class="mobile-menu-toggle" onclick="toggleMobileNav()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 移动端导航栏 -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav(event)">
+        <div class="mobile-nav-content" onclick="event.stopPropagation()">
+            <div class="mobile-nav-header">
+                <h3 style="margin: 0; color: var(--dancol-text-primary);">导航菜单</h3>
+                <button class="mobile-nav-close" onclick="closeMobileNav()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="mobile-nav-menu">
+                <a href="index.html" onclick="closeMobileNav()">首页</a>
+                <a href="getting-started.html" class="active" onclick="closeMobileNav()">快速开始</a>
+                <a href="api-reference.html" onclick="closeMobileNav()">API文档</a>
+                <a href="examples.html" onclick="closeMobileNav()">示例</a>
+            </div>
+            <div class="mobile-theme-section">
+                <h4>主题切换</h4>
+                <div class="dancol-theme-switcher">
+                    <button class="dancol-theme-switcher-button">
+                        <span class="dancol-theme-color light-blue"></span>
+                        <span class="dancol-theme-name">淡蓝主题</span>
+                        <svg class="dancol-theme-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div class="dancol-theme-switcher-dropdown"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="doc-container">
+        <!-- 文档头部 -->
+        <header class="doc-header">
+            <h1 class="doc-title">快速开始</h1>
+            <p class="doc-subtitle">几分钟内开始使用 Dancol UI Framework</p>
+        </header>
+
+        <!-- 安装步骤 -->
+        <section class="doc-section">
+            <h2>安装和引入</h2>
+            <p>Dancol UI Framework 是一个纯前端框架，无需复杂的构建工具，可以直接在HTML页面中引入使用。</p>
+
+            <div class="step-card">
+                <div class="step-title">
+                    <span class="step-number">1</span>
+                    下载框架文件
+                </div>
+                <p>下载 Dancol UI Framework 的完整文件包，或者直接克隆项目到本地。</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code># 克隆项目
+git clone https://github.com/3iXi/DancolUI.git
+
+# 或者直接下载ZIP文件解压</code></pre>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-title">
+                    <span class="step-number">2</span>
+                    文件结构
+                </div>
+                <p>解压后的文件结构如下：</p>
+                <div class="file-structure">
+<span class="folder">Dancol_UI/</span><br>
+├── <span class="folder">assets/</span><br>
+│   ├── <span class="folder">css/</span><br>
+│   │   ├── <span class="file">dancol-core.css</span>          # 核心样式<br>
+│   │   ├── <span class="file">dancol-themes.css</span>        # 主题样式<br>
+│   │   └── <span class="file">dancol-components.css</span>    # 组件样式<br>
+│   └── <span class="folder">js/</span><br>
+│       ├── <span class="file">dancol-core.js</span>           # 核心功能<br>
+│       ├── <span class="file">dancol-theme.js</span>          # 主题切换<br>
+│       └── <span class="file">dancol-toast.js</span>          # Toast消息<br>
+├── <span class="folder">examples/</span>                          # 示例页面<br>
+│   ├── <span class="file">admin-dashboard.html</span>         # 管理仪表板<br>
+│   ├── <span class="file">blog-page.html</span>               # 博客页面<br>
+│   ├── <span class="file">login-page.html</span>              # 登录页面<br>
+│   ├── <span class="file">product-showcase.html</span>        # 产品展示<br>
+│   └── <span class="file">user-management.html</span>         # 用户管理<br>
+├── <span class="file">index.html</span>                           # 首页<br>
+├── <span class="file">api-reference.html</span>                   # API文档<br>
+├── <span class="file">getting-started.html</span>                 # 快速开始<br>
+├── <span class="file">examples.html</span>                        # 示例页面<br>
+└── <span class="file">README.md</span>                            # 项目说明<br>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-title">
+                    <span class="step-number">3</span>
+                    在HTML中引入
+                </div>
+                <p>在您的HTML页面中引入必要的CSS和JavaScript文件：</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;我的项目&lt;/title&gt;
+    
+    &lt;!-- Dancol CSS --&gt;
+    &lt;link rel="stylesheet" href="assets/css/dancol-core.css"&gt;
+    &lt;link rel="stylesheet" href="assets/css/dancol-themes.css"&gt;
+    &lt;link rel="stylesheet" href="assets/css/dancol-components.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- 您的页面内容 --&gt;
+    
+    &lt;!-- Dancol JavaScript --&gt;
+    &lt;script src="assets/js/dancol-core.js"&gt;&lt;/script&gt;
+    &lt;script src="assets/js/dancol-theme.js"&gt;&lt;/script&gt;
+    &lt;script src="assets/js/dancol-toast.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- 基本使用 -->
+        <section class="doc-section">
+            <h2>基本使用</h2>
+            <p>引入框架后，您就可以开始使用 Dancol UI 的各种组件和功能了。</p>
+
+            <h3>创建第一个页面</h3>
+            <p>以下是一个完整的示例页面：</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Dancol UI 示例&lt;/title&gt;
+    
+    &lt;link rel="stylesheet" href="assets/css/dancol-core.css"&gt;
+    &lt;link rel="stylesheet" href="assets/css/dancol-themes.css"&gt;
+    &lt;link rel="stylesheet" href="assets/css/dancol-components.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="dancol-container"&gt;
+        &lt;h1&gt;欢迎使用 Dancol UI&lt;/h1&gt;
+        &lt;p&gt;这是一个使用 Dancol UI Framework 创建的页面。&lt;/p&gt;
+        
+        &lt;!-- 按钮示例 --&gt;
+        &lt;button class="dancol-btn dancol-btn-primary" onclick="showToast()"&gt;
+            点击显示消息
+        &lt;/button&gt;
+        
+        &lt;!-- 主题切换器 --&gt;
+        &lt;div class="dancol-theme-switcher"&gt;
+            &lt;button class="dancol-theme-switcher-button"&gt;
+                &lt;span class="dancol-theme-color light-blue"&gt;&lt;/span&gt;
+                &lt;span class="dancol-theme-name"&gt;淡蓝主题&lt;/span&gt;
+            &lt;/button&gt;
+            &lt;div class="dancol-theme-switcher-dropdown"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;script src="assets/js/dancol-core.js"&gt;&lt;/script&gt;
+    &lt;script src="assets/js/dancol-theme.js"&gt;&lt;/script&gt;
+    &lt;script src="assets/js/dancol-toast.js"&gt;&lt;/script&gt;
+    
+    &lt;script&gt;
+        function showToast() {
+            Dancol.Toast.success('Hello, Dancol UI!');
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+
+            <div class="alert-tip">
+                <span class="tip-icon">💡</span>
+                <strong>提示：</strong>确保按照正确的顺序引入CSS和JavaScript文件。CSS文件应该在&lt;head&gt;中引入，JavaScript文件应该在&lt;/body&gt;标签前引入。
+            </div>
+        </section>
+
+        <!-- 核心概念 -->
+        <section class="doc-section">
+            <h2>核心概念</h2>
+            
+            <h3>主题系统</h3>
+            <p>Dancol UI 内置了4种主题，您可以通过以下方式切换主题：</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                <pre><code>// 切换到淡绿主题
+Dancol.Theme.applyTheme('light-green');
+
+// 获取当前主题
+const currentTheme = Dancol.Theme.getCurrentTheme();
+
+// 监听主题变更事件
+document.addEventListener('dancol:theme-changed', function(e) {
+    console.log('主题已切换为:', e.detail.themeInfo.name);
+});</code></pre>
+            </div>
+
+            <h3>Toast消息系统</h3>
+            <p>使用Toast系统显示各种类型的消息提示：</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                <pre><code>// 显示成功消息
+Dancol.Toast.success('操作成功！');
+
+// 显示错误消息
+Dancol.Toast.error('发生错误，请重试。');
+
+// 自定义配置
+Dancol.Toast.show('info', '自定义消息', {
+    position: 'top-center',
+    duration: 5000,
+    closable: true
+});</code></pre>
+            </div>
+
+            <h3>布局系统</h3>
+            <p>使用响应式网格系统创建布局：</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                <pre><code>&lt;div class="dancol-container"&gt;
+    &lt;div class="dancol-row"&gt;
+        &lt;div class="dancol-col-6"&gt;左侧内容&lt;/div&gt;
+        &lt;div class="dancol-col-6"&gt;右侧内容&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+
+        <!-- 下一步 -->
+        <section class="next-steps">
+            <h3>下一步</h3>
+            <p>现在您已经成功安装并了解了 Dancol UI 的基本使用方法，可以继续探索更多功能：</p>
+            
+            <div class="next-steps-grid">
+                <a href="api-reference.html" class="next-step-card" style="text-decoration: none; color: inherit;">
+                    <div class="next-step-icon">📚</div>
+                    <div class="next-step-title">API文档</div>
+                    <div class="next-step-desc">查看完整的API参考文档</div>
+                </a>
+                
+                <a href="examples.html" class="next-step-card" style="text-decoration: none; color: inherit;">
+                    <div class="next-step-icon">💡</div>
+                    <div class="next-step-title">使用示例</div>
+                    <div class="next-step-desc">学习更多实用的代码示例</div>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Dancol JavaScript -->
+    <script src="assets/js/dancol-core.js"></script>
+    <script src="assets/js/dancol-theme.js"></script>
+    <script src="assets/js/dancol-toast.js"></script>
+    
+    <script>
+        // 移动端导航栏功能
+        function toggleMobileNav() {
+            const overlay = document.getElementById('mobileNavOverlay');
+            overlay.style.display = 'block';
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                overlay.classList.add('active');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileNav(event) {
+            const overlay = document.getElementById('mobileNavOverlay');
+            if (!event || event.target === overlay || event.target.closest('.mobile-nav-close')) {
+                overlay.classList.remove('active');
+                setTimeout(() => {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        document.body.style.overflow = '';
+                    }, 300);
+                }, 300);
+            }
+        }
+
+        // 复制代码功能
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const code = codeBlock.textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '已复制';
+                button.style.backgroundColor = 'var(--dancol-success)';
+                button.style.color = 'white';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.backgroundColor = '';
+                    button.style.color = '';
+                }, 2000);
+
+                Dancol.Toast.success('代码已复制到剪贴板', {
+                    duration: 2000,
+                    position: 'top-right'
+                });
+            }).catch(() => {
+                Dancol.Toast.error('复制失败，请手动复制', {
+                    duration: 3000,
+                    position: 'top-right'
+                });
+            });
+        }
+
+        // 监听窗口大小变化
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                const overlay = document.getElementById('mobileNavOverlay');
+                overlay.classList.remove('active');
+                overlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        // 键盘事件支持
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('mobileNavOverlay');
+                if (overlay.classList.contains('active')) {
+                    closeMobileNav();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

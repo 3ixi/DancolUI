@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dancol UI Framework - 丹青UI框架官网</title>
+
+    <!-- 防闪烁主题预加载脚本 -->
+    <script>
+        (function() {
+            // 立即从localStorage读取主题设置
+            try {
+                const savedTheme = localStorage.getItem('dancol-theme');
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else {
+                    // 默认主题
+                    document.documentElement.setAttribute('data-theme', 'light-blue');
+                }
+            } catch (e) {
+                // 如果localStorage不可用，使用默认主题
+                document.documentElement.setAttribute('data-theme', 'light-blue');
+            }
+        })();
+    </script>
+
+    <!-- Dancol CSS -->
+    <link rel="stylesheet" href="assets/css/dancol-core.css">
+    <link rel="stylesheet" href="assets/css/dancol-themes.css">
+    <link rel="stylesheet" href="assets/css/dancol-components.css">
+    
+    <style>
+        .hero-banner {
+            background: linear-gradient(135deg, var(--dancol-primary-light), var(--dancol-accent));
+            padding: 6rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--dancol-text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .feature-section {
+            padding: 5rem 0;
+            background-color: var(--dancol-bg-primary);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 2.5rem;
+            border-radius: var(--dancol-radius-lg);
+            transition: transform var(--dancol-transition-normal);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-description {
+            color: var(--dancol-text-secondary);
+            line-height: 1.6;
+        }
+        
+        .stats-section {
+            padding: 4rem 0;
+            background-color: var(--dancol-bg-secondary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-lg);
+            box-shadow: var(--dancol-shadow-sm);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--dancol-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--dancol-text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .cta-section {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, var(--dancol-primary), var(--dancol-primary-dark));
+            color: var(--dancol-text-inverse);
+            text-align: center;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .footer {
+            background-color: var(--dancol-bg-tertiary);
+            padding: 3rem 0 2rem;
+            border-top: 1px solid var(--dancol-border-light);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h4 {
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            transition: color var(--dancol-transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: var(--dancol-primary);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--dancol-border-light);
+            color: var(--dancol-text-muted);
+        }
+        
+        .navbar {
+            background-color: var(--dancol-bg-primary);
+            border-bottom: 1px solid var(--dancol-border-light);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--dancol-text-primary);
+        }
+        
+        .navbar-brand h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--dancol-transition-fast);
+        }
+        
+        .nav-link:hover {
+            color: var(--dancol-primary);
+        }
+
+        /* 移动端汉堡菜单样式 */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--dancol-text-primary);
+            font-size: 1.5rem;
+        }
+
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .mobile-nav-content {
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100%;
+            background-color: var(--dancol-bg-primary);
+            box-shadow: var(--dancol-shadow-lg);
+            transition: right 0.3s ease-in-out;
+            overflow-y: auto;
+        }
+
+        .mobile-nav-overlay.active .mobile-nav-content {
+            right: 0;
+        }
+
+        .mobile-nav-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--dancol-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-nav-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--dancol-text-primary);
+            font-size: 1.5rem;
+        }
+
+        .mobile-nav-menu {
+            padding: 1rem 0;
+        }
+
+        .mobile-nav-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--dancol-transition-fast);
+            border-left: 3px solid transparent;
+        }
+
+        .mobile-nav-menu a:hover,
+        .mobile-nav-menu a.active {
+            color: var(--dancol-primary);
+            background-color: var(--dancol-bg-secondary);
+            border-left-color: var(--dancol-primary);
+        }
+
+        .mobile-theme-section {
+            padding: 1rem;
+            border-top: 1px solid var(--dancol-border-light);
+        }
+
+        .mobile-theme-section h4 {
+            margin-bottom: 1rem;
+            color: var(--dancol-text-primary);
+            font-size: 0.9rem;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .navbar-nav > a.nav-link {
+                display: none;
+            }
+
+            .navbar-nav .dancol-theme-switcher {
+                display: none;
+            }
+
+            .navbar-content {
+                padding: 0 1rem;
+            }
+            .hero-banner {
+                padding: 3rem 0;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+                padding: 0 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0 1rem;
+            }
+
+            .hero-buttons .dancol-btn {
+                width: 100%;
+                max-width: 250px;
+                text-align: center;
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .navbar {
+                padding: 0.75rem 0;
+            }
+
+            .navbar-nav {
+                justify-content: flex-end;
+            }
+
+            .navbar-content {
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .navbar-brand h1 {
+                font-size: 1.25rem;
+            }
+
+            .feature-section {
+                padding: 3rem 0;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .feature-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+            .feature-title {
+                font-size: 1.25rem;
+            }
+
+            .stats-section {
+                padding: 3rem 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-item {
+                padding: 1.5rem 1rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .cta-section {
+                padding: 3rem 0;
+            }
+
+            .cta-title {
+                font-size: 1.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .cta-description {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+                padding: 0 1rem;
+            }
+
+            .cta-section .dancol-d-flex {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0 1rem;
+            }
+
+            .cta-section .dancol-btn {
+                width: 100%;
+                max-width: 250px;
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .footer {
+                padding: 2rem 0 1rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer-section h4 {
+                font-size: 1rem;
+            }
+
+            .footer-links {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* 超小屏幕优化 */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.75rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .navbar-nav {
+                font-size: 0.8rem;
+                gap: 0.125rem;
+            }
+
+            .feature-card {
+                padding: 1rem;
+            }
+
+            .feature-icon {
+                font-size: 2.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .stat-item {
+                padding: 1rem;
+            }
+
+            .cta-title {
+                font-size: 1.5rem;
+            }
+
+            .cta-description {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="dancol-container">
+            <div class="navbar-content">
+                <a href="#" class="navbar-brand">
+                    <h1>Dancol UI</h1>
+                    <span style="font-size: 0.875rem; color: var(--dancol-text-muted);">丹青</span>
+                </a>
+                <div class="navbar-nav">
+                    <a href="#features" class="nav-link">特性</a>
+                    <a href="getting-started.html" class="nav-link">快速开始</a>
+                    <a href="api-reference.html" class="nav-link">API文档</a>
+                    <a href="examples.html" class="nav-link">示例</a>
+                    <div class="dancol-theme-switcher">
+                        <button class="dancol-theme-switcher-button">
+                            <span class="dancol-theme-color light-blue"></span>
+                            <span class="dancol-theme-name">淡蓝主题</span>
+                            <svg class="dancol-theme-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="dancol-theme-switcher-dropdown"></div>
+                    </div>
+                    <button class="mobile-menu-toggle" onclick="toggleMobileNav()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 移动端导航栏 -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav(event)">
+        <div class="mobile-nav-content" onclick="event.stopPropagation()">
+            <div class="mobile-nav-header">
+                <h3 style="margin: 0; color: var(--dancol-text-primary);">导航菜单</h3>
+                <button class="mobile-nav-close" onclick="closeMobileNav()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="mobile-nav-menu">
+                <a href="index.html" class="active" onclick="closeMobileNav()">首页</a>
+                <a href="getting-started.html" onclick="closeMobileNav()">快速开始</a>
+                <a href="api-reference.html" onclick="closeMobileNav()">API文档</a>
+                <a href="examples.html" onclick="closeMobileNav()">示例</a>
+            </div>
+            <div class="mobile-theme-section">
+                <h4>主题切换</h4>
+                <div class="dancol-theme-switcher">
+                    <button class="dancol-theme-switcher-button">
+                        <span class="dancol-theme-color light-blue"></span>
+                        <span class="dancol-theme-name">淡蓝主题</span>
+                        <svg class="dancol-theme-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div class="dancol-theme-switcher-dropdown"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 英雄区域 -->
+    <section class="hero-banner">
+        <div class="dancol-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Dancol UI Framework</h1>
+                <p class="hero-subtitle">丹青UI框架 - 淡雅典雅的前端UI组件库，为Web应用提供优雅的用户界面解决方案</p>
+                <div class="hero-buttons">
+                    <a href="getting-started.html" class="dancol-btn dancol-btn-primary dancol-btn-lg">立即开始</a>
+                    <a href="https://github.com/3iXi/DancolUI" class="dancol-btn dancol-btn-secondary dancol-btn-lg">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特性介绍 -->
+    <section id="features" class="feature-section">
+        <div class="dancol-container">
+            <h2 class="dancol-text-center" style="font-size: 2.5rem; margin-bottom: 1rem;">框架特性</h2>
+            <p class="dancol-text-center dancol-text-secondary" style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">Dancol UI提供了丰富的功能特性，让您轻松构建美观且功能强大的Web应用</p>
+            
+            <div class="feature-grid">
+                <div class="dancol-card feature-card">
+                    <span class="feature-icon">🎨</span>
+                    <h3 class="feature-title">多主题切换</h3>
+                    <p class="feature-description">内置4种精美主题配色，支持动态切换，满足不同场景和用户偏好需求。基于CSS变量实现，切换流畅自然。</p>
+                </div>
+                
+                <div class="dancol-card feature-card">
+                    <span class="feature-icon">💬</span>
+                    <h3 class="feature-title">Toast消息系统</h3>
+                    <p class="feature-description">功能完善的消息提示系统，支持多种消息类型、位置配置和动画效果，提供简洁易用的JavaScript API。</p>
+                </div>
+                
+                <div class="dancol-card feature-card">
+                    <span class="feature-icon">📱</span>
+                    <h3 class="feature-title">响应式设计</h3>
+                    <p class="feature-description">完美适配移动端和桌面端设备，采用现代CSS技术，确保在各种屏幕尺寸下都能提供一致的用户体验。</p>
+                </div>
+                
+                <div class="dancol-card feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">轻量高效</h3>
+                    <p class="feature-description">使用原生HTML、CSS、JavaScript实现，无第三方依赖，体积小巧，加载速度快，性能表现优异。</p>
+                </div>
+                
+                <div class="dancol-card feature-card">
+                    <span class="feature-icon">🧩</span>
+                    <h3 class="feature-title">组件化架构</h3>
+                    <p class="feature-description">模块化的组件设计，易于扩展和维护。提供丰富的UI组件，满足常见的界面开发需求。</p>
+                </div>
+                
+                <div class="dancol-card feature-card">
+                    <span class="feature-icon">🛠️</span>
+                    <h3 class="feature-title">开发友好</h3>
+                    <p class="feature-description">完整的中文文档，清晰的API设计，丰富的示例代码，让开发者能够快速上手并高效开发。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 统计数据 -->
+    <section class="stats-section">
+        <div class="dancol-container">
+            <h2 class="dancol-text-center" style="font-size: 2rem; margin-bottom: 1rem;">框架数据</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">精美主题</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">UI组件</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">外部依赖</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">响应式</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 行动号召 -->
+    <section class="cta-section">
+        <div class="dancol-container">
+            <h2 class="cta-title">开始使用 Dancol UI</h2>
+            <p class="cta-description">立即体验淡雅典雅的UI设计，为您的项目增添优雅气质</p>
+            <div class="dancol-d-flex dancol-justify-center" style="gap: 1.5rem; flex-wrap: wrap;">
+                <a href="getting-started.html" class="dancol-btn dancol-btn-lg" style="background-color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); color: white;">快速开始</a>
+                <a href="../examples/index.html" class="dancol-btn dancol-btn-outline dancol-btn-lg" style="border-color: rgba(255,255,255,0.5); color: white;">查看演示</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="dancol-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Dancol UI</h4>
+                    <p class="dancol-text-secondary">淡雅典雅的前端UI框架，专注于提供优质的用户界面解决方案。</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>文档</h4>
+                    <ul class="footer-links">
+                        <li><a href="getting-started.html">快速开始</a></li>
+                        <li><a href="api-reference.html">API参考</a></li>
+                        <li><a href="examples.html">使用示例</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>演示</h4>
+                    <ul class="footer-links">
+                        <li><a href="../examples/index.html">综合演示</a></li>
+                        <li><a href="../examples/theme-demo.html">主题演示</a></li>
+                        <li><a href="../examples/toast-demo.html">Toast演示</a></li>
+                        <li><a href="../examples/components-demo.html">组件演示</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>资源</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://github.com/3iXi/DancolUI">GitHub</a></li>
+                        <li><a href="https://github.com/3iXi/DancolUI/issues">问题反馈</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Dancol UI Framework. 一个淡雅典雅的前端UI框架。</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dancol JavaScript -->
+    <script src="assets/js/dancol-core.js"></script>
+    <script src="assets/js/dancol-theme.js"></script>
+    <script src="assets/js/dancol-toast.js"></script>
+    
+    <script>
+        // 移动端导航栏功能
+        function toggleMobileNav() {
+            const overlay = document.getElementById('mobileNavOverlay');
+            overlay.style.display = 'block';
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                overlay.classList.add('active');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileNav(event) {
+            const overlay = document.getElementById('mobileNavOverlay');
+            if (!event || event.target === overlay || event.target.closest('.mobile-nav-close')) {
+                overlay.classList.remove('active');
+                setTimeout(() => {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        document.body.style.overflow = '';
+                    }, 300);
+                }, 300);
+            }
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 欢迎Toast
+        document.addEventListener('dancol:ready', function() {
+            setTimeout(() => {
+                Dancol.Toast.success('欢迎使用 Dancol UI Framework！', {
+                    position: 'top-right',
+                    duration: 3000
+                });
+            }, 1000);
+        });
+
+        // 监听窗口大小变化
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                const overlay = document.getElementById('mobileNavOverlay');
+                overlay.classList.remove('active');
+                overlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        // 键盘事件支持
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('mobileNavOverlay');
+                if (overlay.classList.contains('active')) {
+                    closeMobileNav();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

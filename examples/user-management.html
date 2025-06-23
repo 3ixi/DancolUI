@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理 - Dancol UI Framework</title>
+
+    <!-- 防闪烁主题预加载脚本 -->
+    <script>
+        (function() {
+            // 立即从localStorage读取主题设置
+            try {
+                const savedTheme = localStorage.getItem('dancol-theme');
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else {
+                    // 默认主题
+                    document.documentElement.setAttribute('data-theme', 'light-blue');
+                }
+            } catch (e) {
+                // 如果localStorage不可用，使用默认主题
+                document.documentElement.setAttribute('data-theme', 'light-blue');
+            }
+        })();
+    </script>
+
+    <!-- Dancol CSS -->
+    <link rel="stylesheet" href="../assets/css/dancol-core.css">
+    <link rel="stylesheet" href="../assets/css/dancol-themes.css">
+    <link rel="stylesheet" href="../assets/css/dancol-components.css">
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <style>
+        /* 用户管理页面专用样式 */
+        .user-management-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: 60px 1fr;
+            grid-template-areas: 
+                "sidebar header"
+                "sidebar main";
+            min-height: 100vh;
+            background-color: var(--dancol-bg-secondary);
+        }
+
+        /* 复用管理员仪表板的头部和侧边栏样式 */
+        .admin-header {
+            grid-area: header;
+            background: var(--dancol-bg-primary);
+            border-bottom: 1px solid var(--dancol-border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--dancol-spacing-lg);
+            box-shadow: var(--dancol-shadow-sm);
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--dancol-spacing-md);
+        }
+
+        .header-title {
+            font-size: var(--dancol-text-lg);
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            margin: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--dancol-spacing-md);
+        }
+
+        .admin-sidebar {
+            grid-area: sidebar;
+            background: var(--dancol-bg-primary);
+            border-right: 1px solid var(--dancol-border-light);
+            padding: var(--dancol-spacing-lg) 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--dancol-spacing-sm);
+            padding: 0 var(--dancol-spacing-lg);
+            margin-bottom: var(--dancol-spacing-xl);
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, var(--dancol-primary), var(--dancol-primary-light));
+            border-radius: var(--dancol-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .brand-text {
+            font-size: var(--dancol-text-lg);
+            font-weight: 700;
+            color: var(--dancol-text-primary);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-bottom: var(--dancol-spacing-xs);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--dancol-spacing-sm);
+            padding: var(--dancol-spacing-sm) var(--dancol-spacing-lg);
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-size: var(--dancol-text-sm);
+            font-weight: 500;
+            transition: all var(--dancol-transition-fast);
+            border-right: 3px solid transparent;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: var(--dancol-accent);
+            color: var(--dancol-primary);
+            border-right-color: var(--dancol-primary);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 主要内容区域 */
+        .user-main {
+            grid-area: main;
+            padding: var(--dancol-spacing-lg);
+            overflow-y: auto;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--dancol-spacing-xl);
+            padding-bottom: var(--dancol-spacing-lg);
+            border-bottom: 1px solid var(--dancol-border-light);
+        }
+
+        .page-title {
+            font-size: var(--dancol-text-2xl);
+            font-weight: 700;
+            color: var(--dancol-text-primary);
+            margin: 0;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: var(--dancol-spacing-sm);
+        }
+
+        /* 搜索和筛选区域 */
+        .search-filters {
+            background: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-lg);
+            padding: var(--dancol-spacing-lg);
+            margin-bottom: var(--dancol-spacing-lg);
+            box-shadow: var(--dancol-shadow-sm);
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: var(--dancol-spacing-md);
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--dancol-spacing-xs);
+        }
+
+        .filter-label {
+            font-size: var(--dancol-text-sm);
+            font-weight: 500;
+            color: var(--dancol-text-primary);
+        }
+
+        .search-input {
+            padding: var(--dancol-spacing-sm) var(--dancol-spacing-md);
+            border: 1px solid var(--dancol-border-medium);
+            border-radius: var(--dancol-radius-md);
+            font-size: var(--dancol-text-sm);
+        }
+
+        .filter-select {
+            padding: var(--dancol-spacing-sm) var(--dancol-spacing-md);
+            border: 1px solid var(--dancol-border-medium);
+            border-radius: var(--dancol-radius-md);
+            font-size: var(--dancol-text-sm);
+            background-color: var(--dancol-bg-primary);
+        }
+
+        /* 视图切换 */
+        .view-toggle {
+            display: flex;
+            background: var(--dancol-bg-secondary);
+            border-radius: var(--dancol-radius-md);
+            padding: var(--dancol-spacing-xs);
+            margin-bottom: var(--dancol-spacing-lg);
+        }
+
+        .view-btn {
+            padding: var(--dancol-spacing-xs) var(--dancol-spacing-md);
+            border: none;
+            background: transparent;
+            border-radius: var(--dancol-radius-sm);
+            cursor: pointer;
+            font-size: var(--dancol-text-sm);
+            color: var(--dancol-text-secondary);
+            transition: all var(--dancol-transition-fast);
+        }
+
+        .view-btn.active {
+            background: var(--dancol-bg-primary);
+            color: var(--dancol-primary);
+            box-shadow: var(--dancol-shadow-sm);
+        }
+
+        /* 用户表格视图 */
+        .users-table-container {
+            background: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--dancol-shadow-sm);
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th {
+            background: var(--dancol-bg-secondary);
+            padding: var(--dancol-spacing-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            border-bottom: 1px solid var(--dancol-border-light);
+        }
+
+        .users-table td {
+            padding: var(--dancol-spacing-md);
+            border-bottom: 1px solid var(--dancol-border-light);
+            vertical-align: middle;
+        }
+
+        .users-table tr:hover {
+            background-color: var(--dancol-accent);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--dancol-spacing-sm);
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--dancol-spacing-xs);
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--dancol-text-primary);
+        }
+
+        .user-email {
+            font-size: var(--dancol-text-sm);
+            color: var(--dancol-text-muted);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: var(--dancol-spacing-xs);
+        }
+
+        .action-btn {
+            padding: var(--dancol-spacing-xs) var(--dancol-spacing-sm);
+            border: none;
+            border-radius: var(--dancol-radius-sm);
+            cursor: pointer;
+            font-size: var(--dancol-text-xs);
+            transition: all var(--dancol-transition-fast);
+        }
+
+        .action-btn.edit {
+            background: var(--dancol-info);
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: var(--dancol-error);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--dancol-shadow-sm);
+        }
+
+        /* 用户卡片视图 */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--dancol-spacing-lg);
+        }
+
+        .user-card {
+            background: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-lg);
+            padding: var(--dancol-spacing-lg);
+            box-shadow: var(--dancol-shadow-sm);
+            transition: transform var(--dancol-transition-fast), box-shadow var(--dancol-transition-fast);
+        }
+
+        .user-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--dancol-shadow-md);
+        }
+
+        .user-card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--dancol-spacing-md);
+            margin-bottom: var(--dancol-spacing-md);
+        }
+
+        .user-card-info {
+            flex: 1;
+        }
+
+        .user-card-name {
+            font-size: var(--dancol-text-lg);
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            margin-bottom: var(--dancol-spacing-xs);
+        }
+
+        .user-card-email {
+            color: var(--dancol-text-muted);
+            font-size: var(--dancol-text-sm);
+        }
+
+        .user-card-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--dancol-spacing-md);
+            margin-bottom: var(--dancol-spacing-md);
+            padding: var(--dancol-spacing-md);
+            background: var(--dancol-bg-secondary);
+            border-radius: var(--dancol-radius-md);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: var(--dancol-text-lg);
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+        }
+
+        .stat-label {
+            font-size: var(--dancol-text-xs);
+            color: var(--dancol-text-muted);
+            margin-top: var(--dancol-spacing-xs);
+        }
+
+        .user-card-actions {
+            display: flex;
+            gap: var(--dancol-spacing-sm);
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--dancol-spacing-sm);
+            margin-top: var(--dancol-spacing-xl);
+        }
+
+        .pagination-btn {
+            padding: var(--dancol-spacing-sm) var(--dancol-spacing-md);
+            border: 1px solid var(--dancol-border-medium);
+            background: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-md);
+            cursor: pointer;
+            transition: all var(--dancol-transition-fast);
+        }
+
+        .pagination-btn:hover,
+        .pagination-btn.active {
+            background: var(--dancol-primary);
+            color: white;
+            border-color: var(--dancol-primary);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 移动端汉堡菜单 */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--dancol-spacing-xs);
+            color: var(--dancol-text-primary);
+            font-size: 1.5rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .user-management-layout {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "header"
+                    "main";
+            }
+
+            .admin-sidebar {
+                position: fixed;
+                top: 60px;
+                left: -250px;
+                width: 250px;
+                height: calc(100vh - 60px);
+                z-index: 1000;
+                transition: left var(--dancol-transition-normal);
+                box-shadow: var(--dancol-shadow-lg);
+            }
+
+            .admin-sidebar.active {
+                left: 0;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
+                gap: var(--dancol-spacing-sm);
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--dancol-spacing-md);
+            }
+
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .users-table-container {
+                overflow-x: auto;
+            }
+
+            .users-table {
+                min-width: 600px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .user-main {
+                padding: var(--dancol-spacing-md);
+            }
+
+            .search-filters {
+                padding: var(--dancol-spacing-md);
+            }
+
+            .user-card {
+                padding: var(--dancol-spacing-md);
+            }
+
+            .user-card-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="user-management-layout">
+        <!-- 顶部导航栏 -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <h1 class="header-title">用户管理</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-user">
+                    <img src="../assets/images/avatar.jpg"
+                         class="dancol-avatar dancol-avatar-sm" alt="管理员头像">
+                    <div class="user-info">
+                        <div class="user-name">张管理员</div>
+                        <div class="user-role">系统管理员</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 侧边栏 -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">D</div>
+                <div class="brand-text">Dancol Admin</div>
+            </div>
+            <nav>
+                <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a href="admin-dashboard.html" class="nav-link">
+                            <span class="nav-icon">📊</span>
+                            <span>仪表板</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <span class="nav-icon">👥</span>
+                            <span>用户管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">📦</span>
+                            <span>订单管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">🛍️</span>
+                            <span>商品管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">📈</span>
+                            <span>数据分析</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">⚙️</span>
+                            <span>系统设置</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../api-reference.html" class="nav-link">
+                            <span class="nav-icon">📚</span>
+                            <span>返回文档</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主要内容区域 -->
+        <main class="user-main">
+            <!-- 页面头部 -->
+            <div class="page-header">
+                <h2 class="page-title">用户管理</h2>
+                <div class="page-actions">
+                    <button class="dancol-btn dancol-btn-outline" onclick="exportUsers()">
+                        <span>📊</span>
+                        <span>导出数据</span>
+                    </button>
+                    <button class="dancol-btn dancol-btn-primary" onclick="addUser()">
+                        <span>➕</span>
+                        <span>添加用户</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 搜索和筛选 -->
+            <div class="search-filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">搜索用户</label>
+                        <input type="text" class="search-input" placeholder="输入用户名、邮箱或手机号..."
+                               onkeyup="searchUsers(this.value)">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">用户状态</label>
+                        <select class="filter-select" onchange="filterByStatus(this.value)">
+                            <option value="">全部状态</option>
+                            <option value="active">活跃</option>
+                            <option value="inactive">非活跃</option>
+                            <option value="banned">已禁用</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">用户类型</label>
+                        <select class="filter-select" onchange="filterByType(this.value)">
+                            <option value="">全部类型</option>
+                            <option value="vip">VIP用户</option>
+                            <option value="regular">普通用户</option>
+                            <option value="admin">管理员</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">注册时间</label>
+                        <select class="filter-select" onchange="filterByDate(this.value)">
+                            <option value="">全部时间</option>
+                            <option value="today">今天</option>
+                            <option value="week">本周</option>
+                            <option value="month">本月</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">&nbsp;</label>
+                        <button class="dancol-btn dancol-btn-secondary" onclick="resetFilters()">重置</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 视图切换 -->
+            <div class="view-toggle">
+                <button class="view-btn active" onclick="switchView('table')">📋 表格视图</button>
+                <button class="view-btn" onclick="switchView('grid')">🔲 卡片视图</button>
+            </div>
+
+            <!-- 用户列表 - 表格视图 -->
+            <div id="tableView" class="users-table-container">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>用户信息</th>
+                            <th>状态</th>
+                            <th>类型</th>
+                            <th>注册时间</th>
+                            <th>最后登录</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- 用户数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 用户列表 - 卡片视图 -->
+            <div id="gridView" class="users-grid" style="display: none;">
+                <!-- 用户卡片将通过JavaScript动态生成 -->
+            </div>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <button class="pagination-btn" onclick="changePage('prev')" id="prevBtn">上一页</button>
+                <button class="pagination-btn active" onclick="changePage(1)">1</button>
+                <button class="pagination-btn" onclick="changePage(2)">2</button>
+                <button class="pagination-btn" onclick="changePage(3)">3</button>
+                <button class="pagination-btn" onclick="changePage(4)">4</button>
+                <button class="pagination-btn" onclick="changePage(5)">5</button>
+                <button class="pagination-btn" onclick="changePage('next')" id="nextBtn">下一页</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Dancol JS -->
+    <script src="../assets/js/dancol-core.js"></script>
+    <script src="../assets/js/dancol-theme.js"></script>
+    <script src="../assets/js/dancol-toast.js"></script>
+
+    <!-- 用户编辑模态框 -->
+    <div id="userModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">添加用户</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="dancol-form-label">头像</label>
+                            <div class="avatar-upload">
+                                <img id="avatarPreview" src="../assets/images/avatar.jpg"
+                                     class="dancol-avatar dancol-avatar-xl" alt="头像预览">
+                                <input type="file" id="avatarInput" accept="image/*" style="display: none;"
+                                       onchange="previewAvatar(this)">
+                                <button type="button" class="upload-btn" onclick="document.getElementById('avatarInput').click()">
+                                    选择头像
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="dancol-form-label">用户名</label>
+                            <input type="text" class="dancol-form-control" id="userName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="dancol-form-label">邮箱</label>
+                            <input type="email" class="dancol-form-control" id="userEmail" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="dancol-form-label">手机号</label>
+                            <input type="tel" class="dancol-form-control" id="userPhone">
+                        </div>
+                        <div class="form-group">
+                            <label class="dancol-form-label">用户类型</label>
+                            <select class="dancol-form-control" id="userType">
+                                <option value="regular">普通用户</option>
+                                <option value="vip">VIP用户</option>
+                                <option value="admin">管理员</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="dancol-form-label">状态</label>
+                            <select class="dancol-form-control" id="userStatus">
+                                <option value="active">活跃</option>
+                                <option value="inactive">非活跃</option>
+                                <option value="banned">已禁用</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="dancol-btn dancol-btn-secondary" onclick="closeModal()">取消</button>
+                <button class="dancol-btn dancol-btn-primary" onclick="saveUser()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟用户数据
+        const usersData = [
+            {
+                id: 1,
+                name: '张小明',
+                email: 'zhangxm@example.com',
+                phone: '138****1234',
+                avatar: '../assets/images/avatar.jpg',
+                status: 'active',
+                type: 'vip',
+                registerDate: '2024-01-15',
+                lastLogin: '2024-01-20 14:30',
+                orders: 25,
+                spending: 15680
+            },
+            {
+                id: 2,
+                name: '李小红',
+                email: 'lixh@example.com',
+                phone: '139****5678',
+                avatar: '../assets/images/avatar.jpg',
+                status: 'active',
+                type: 'regular',
+                registerDate: '2024-01-10',
+                lastLogin: '2024-01-19 09:15',
+                orders: 8,
+                spending: 3240
+            },
+            {
+                id: 3,
+                name: '王大力',
+                email: 'wangdl@example.com',
+                phone: '137****9012',
+                avatar: '../assets/images/avatar.jpg',
+                status: 'inactive',
+                type: 'regular',
+                registerDate: '2024-01-05',
+                lastLogin: '2024-01-10 16:45',
+                orders: 3,
+                spending: 890
+            },
+            {
+                id: 4,
+                name: '赵美丽',
+                email: 'zhaoml@example.com',
+                phone: '136****3456',
+                avatar: '../assets/images/avatar.jpg',
+                status: 'active',
+                type: 'vip',
+                registerDate: '2023-12-20',
+                lastLogin: '2024-01-20 11:20',
+                orders: 42,
+                spending: 28900
+            },
+            {
+                id: 5,
+                name: '孙志强',
+                email: 'sunzq@example.com',
+                phone: '135****7890',
+                avatar: '../assets/images/avatar.jpg',
+                status: 'banned',
+                type: 'regular',
+                registerDate: '2024-01-01',
+                lastLogin: '2024-01-05 20:10',
+                orders: 1,
+                spending: 120
+            },
+            {
+                id: 6,
+                name: '周小芳',
+                email: 'zhouxf@example.com',
+                phone: '134****2468',
+                avatar: '../assets/images/avatar.jpg',
+                status: 'active',
+                type: 'admin',
+                registerDate: '2023-11-15',
+                lastLogin: '2024-01-20 08:30',
+                orders: 0,
+                spending: 0
+            }
+        ];
+
+        let currentView = 'table';
+        let filteredUsers = [...usersData];
+        let currentPage = 1;
+        const usersPerPage = 10;
+
+        // 侧边栏切换功能
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // 视图切换功能
+        function switchView(view) {
+            currentView = view;
+
+            // 更新按钮状态
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 切换视图
+            const tableView = document.getElementById('tableView');
+            const gridView = document.getElementById('gridView');
+
+            if (view === 'table') {
+                tableView.style.display = 'block';
+                gridView.style.display = 'none';
+                renderTableView();
+            } else {
+                tableView.style.display = 'none';
+                gridView.style.display = 'grid';
+                renderGridView();
+            }
+
+            if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                Dancol.Toast.info(`切换到${view === 'table' ? '表格' : '卡片'}视图`);
+            }
+        }
+
+        // 渲染表格视图
+        function renderTableView() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="user-info">
+                            <img src="${user.avatar}" class="dancol-avatar dancol-avatar-md" alt="${user.name}">
+                            <div class="user-details">
+                                <div class="user-name">${user.name}</div>
+                                <div class="user-email">${user.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="dancol-badge dancol-badge-${getStatusColor(user.status)}">
+                            ${getStatusText(user.status)}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="dancol-badge dancol-badge-${getTypeColor(user.type)}">
+                            ${getTypeText(user.type)}
+                        </span>
+                    </td>
+                    <td>${user.registerDate}</td>
+                    <td>${user.lastLogin}</td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="action-btn edit" onclick="editUser(${user.id})">编辑</button>
+                            <button class="action-btn delete" onclick="deleteUser(${user.id})">删除</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 渲染卡片视图
+        function renderGridView() {
+            const gridView = document.getElementById('gridView');
+            gridView.innerHTML = '';
+
+            filteredUsers.forEach(user => {
+                const card = document.createElement('div');
+                card.className = 'user-card';
+                card.innerHTML = `
+                    <div class="user-card-header">
+                        <img src="${user.avatar}" class="dancol-avatar dancol-avatar-lg dancol-img-border-primary" alt="${user.name}">
+                        <div class="user-card-info">
+                            <div class="user-card-name">${user.name}</div>
+                            <div class="user-card-email">${user.email}</div>
+                        </div>
+                        <div>
+                            <span class="dancol-badge dancol-badge-${getStatusColor(user.status)}">
+                                ${getStatusText(user.status)}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="user-card-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${user.orders}</div>
+                            <div class="stat-label">订单数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">¥${user.spending.toLocaleString()}</div>
+                            <div class="stat-label">消费金额</div>
+                        </div>
+                    </div>
+                    <div class="user-card-actions">
+                        <button class="dancol-btn dancol-btn-sm dancol-btn-outline" onclick="editUser(${user.id})">编辑</button>
+                        <button class="dancol-btn dancol-btn-sm dancol-btn-secondary" onclick="viewUser(${user.id})">查看</button>
+                        <button class="dancol-btn dancol-btn-sm" style="background: var(--dancol-error); color: white;" onclick="deleteUser(${user.id})">删除</button>
+                    </div>
+                `;
+                gridView.appendChild(card);
+            });
+        }
+
+        // 获取状态颜色
+        function getStatusColor(status) {
+            const colors = {
+                'active': 'success',
+                'inactive': 'warning',
+                'banned': 'error'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const texts = {
+                'active': '活跃',
+                'inactive': '非活跃',
+                'banned': '已禁用'
+            };
+            return texts[status] || status;
+        }
+
+        // 获取类型颜色
+        function getTypeColor(type) {
+            const colors = {
+                'vip': 'warning',
+                'regular': 'info',
+                'admin': 'primary'
+            };
+            return colors[type] || 'secondary';
+        }
+
+        // 获取类型文本
+        function getTypeText(type) {
+            const texts = {
+                'vip': 'VIP用户',
+                'regular': '普通用户',
+                'admin': '管理员'
+            };
+            return texts[type] || type;
+        }
+
+        // 搜索用户
+        function searchUsers(query) {
+            if (!query.trim()) {
+                filteredUsers = [...usersData];
+            } else {
+                filteredUsers = usersData.filter(user =>
+                    user.name.toLowerCase().includes(query.toLowerCase()) ||
+                    user.email.toLowerCase().includes(query.toLowerCase()) ||
+                    user.phone.includes(query)
+                );
+            }
+
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderGridView();
+            }
+        }
+
+        // 按状态筛选
+        function filterByStatus(status) {
+            if (!status) {
+                filteredUsers = [...usersData];
+            } else {
+                filteredUsers = usersData.filter(user => user.status === status);
+            }
+
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderGridView();
+            }
+        }
+
+        // 按类型筛选
+        function filterByType(type) {
+            if (!type) {
+                filteredUsers = [...usersData];
+            } else {
+                filteredUsers = usersData.filter(user => user.type === type);
+            }
+
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderGridView();
+            }
+        }
+
+        // 按日期筛选
+        function filterByDate(period) {
+            const now = new Date();
+            let startDate;
+
+            switch(period) {
+                case 'today':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    break;
+                case 'week':
+                    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    break;
+                case 'month':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    break;
+                default:
+                    filteredUsers = [...usersData];
+                    if (currentView === 'table') {
+                        renderTableView();
+                    } else {
+                        renderGridView();
+                    }
+                    return;
+            }
+
+            filteredUsers = usersData.filter(user => {
+                const userDate = new Date(user.registerDate);
+                return userDate >= startDate;
+            });
+
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderGridView();
+            }
+        }
+
+        // 重置筛选
+        function resetFilters() {
+            document.querySelectorAll('.search-input, .filter-select').forEach(input => {
+                input.value = '';
+            });
+            filteredUsers = [...usersData];
+
+            if (currentView === 'table') {
+                renderTableView();
+            } else {
+                renderGridView();
+            }
+
+            if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                Dancol.Toast.info('筛选条件已重置');
+            }
+        }
+
+        // 添加用户
+        function addUser() {
+            document.getElementById('modalTitle').textContent = '添加用户';
+            document.getElementById('userForm').reset();
+            document.getElementById('avatarPreview').src = '../assets/images/avatar.jpg';
+            showModal();
+        }
+
+        // 编辑用户
+        function editUser(userId) {
+            const user = usersData.find(u => u.id === userId);
+            if (user) {
+                document.getElementById('modalTitle').textContent = '编辑用户';
+                document.getElementById('userName').value = user.name;
+                document.getElementById('userEmail').value = user.email;
+                document.getElementById('userPhone').value = user.phone;
+                document.getElementById('userType').value = user.type;
+                document.getElementById('userStatus').value = user.status;
+                document.getElementById('avatarPreview').src = user.avatar;
+                showModal();
+            }
+        }
+
+        // 查看用户
+        function viewUser(userId) {
+            if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                Dancol.Toast.info(`查看用户 ID: ${userId} 的详细信息`);
+            }
+        }
+
+        // 删除用户
+        function deleteUser(userId) {
+            if (confirm('确定要删除这个用户吗？')) {
+                const index = usersData.findIndex(u => u.id === userId);
+                if (index > -1) {
+                    usersData.splice(index, 1);
+                    filteredUsers = filteredUsers.filter(u => u.id !== userId);
+
+                    if (currentView === 'table') {
+                        renderTableView();
+                    } else {
+                        renderGridView();
+                    }
+
+                    if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                        Dancol.Toast.success('用户删除成功');
+                    }
+                }
+            }
+        }
+
+        // 导出用户数据
+        function exportUsers() {
+            if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                Dancol.Toast.success('用户数据导出功能开发中...');
+            }
+        }
+
+        // 显示模态框
+        function showModal() {
+            document.getElementById('userModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // 保存用户
+        function saveUser() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const phone = document.getElementById('userPhone').value;
+            const type = document.getElementById('userType').value;
+            const status = document.getElementById('userStatus').value;
+            const avatar = document.getElementById('avatarPreview').src;
+
+            if (!name || !email) {
+                if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                    Dancol.Toast.error('请填写必填字段');
+                }
+                return;
+            }
+
+            // 这里应该发送到服务器保存
+            if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                Dancol.Toast.success('用户信息保存成功');
+            }
+
+            closeModal();
+        }
+
+        // 头像预览
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // 分页功能
+        function changePage(page) {
+            if (page === 'prev') {
+                if (currentPage > 1) currentPage--;
+            } else if (page === 'next') {
+                if (currentPage < 5) currentPage++;
+            } else {
+                currentPage = page;
+            }
+
+            // 更新分页按钮状态
+            document.querySelectorAll('.pagination-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const pageBtn = document.querySelector(`.pagination-btn[onclick="changePage(${currentPage})"]`);
+            if (pageBtn) {
+                pageBtn.classList.add('active');
+            }
+
+            if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                Dancol.Toast.info(`切换到第 ${currentPage} 页`);
+            }
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化表格视图
+            renderTableView();
+
+            // 点击外部关闭侧边栏（移动端）
+            document.addEventListener('click', function(e) {
+                const sidebar = document.getElementById('adminSidebar');
+                const menuToggle = document.querySelector('.mobile-menu-toggle');
+
+                if (window.innerWidth <= 768 &&
+                    !sidebar.contains(e.target) &&
+                    !menuToggle.contains(e.target) &&
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // 点击外部关闭模态框
+            document.getElementById('userModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+
+            // ESC键关闭模态框
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+
+            // 窗口大小变化时自动关闭移动端侧边栏
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    const sidebar = document.getElementById('adminSidebar');
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // 欢迎消息
+            setTimeout(() => {
+                if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                    Dancol.Toast.success('用户管理系统加载完成！', {
+                        position: 'top-right',
+                        duration: 3000
+                    });
+                }
+            }, 500);
+        });
+    </script>
+
+    <style>
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-lg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--dancol-shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--dancol-spacing-lg);
+            border-bottom: 1px solid var(--dancol-border-light);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: var(--dancol-text-lg);
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dancol-text-muted);
+            padding: var(--dancol-spacing-xs);
+            border-radius: var(--dancol-radius-sm);
+            transition: all var(--dancol-transition-fast);
+        }
+
+        .modal-close:hover {
+            background-color: var(--dancol-bg-secondary);
+            color: var(--dancol-text-primary);
+        }
+
+        .modal-body {
+            padding: var(--dancol-spacing-lg);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--dancol-spacing-sm);
+            padding: var(--dancol-spacing-lg);
+            border-top: 1px solid var(--dancol-border-light);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--dancol-spacing-md);
+            margin-bottom: var(--dancol-spacing-md);
+        }
+
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-row .form-group:only-child {
+            grid-column: 1 / -1;
+        }
+
+        .avatar-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--dancol-spacing-md);
+            padding: var(--dancol-spacing-lg);
+            border: 2px dashed var(--dancol-border-medium);
+            border-radius: var(--dancol-radius-md);
+            text-align: center;
+        }
+
+        .upload-btn {
+            padding: var(--dancol-spacing-sm) var(--dancol-spacing-md);
+            background: var(--dancol-primary);
+            color: white;
+            border: none;
+            border-radius: var(--dancol-radius-md);
+            cursor: pointer;
+            font-size: var(--dancol-text-sm);
+            transition: background-color var(--dancol-transition-fast);
+        }
+
+        .upload-btn:hover {
+            background: var(--dancol-primary-dark);
+        }
+
+        /* 头部用户信息样式补充 */
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: var(--dancol-spacing-sm);
+            cursor: pointer;
+            padding: var(--dancol-spacing-xs) var(--dancol-spacing-sm);
+            border-radius: var(--dancol-radius-md);
+            transition: background-color var(--dancol-transition-fast);
+        }
+
+        .header-user:hover {
+            background-color: var(--dancol-bg-secondary);
+        }
+
+        .user-name {
+            font-size: var(--dancol-text-sm);
+            font-weight: 500;
+            color: var(--dancol-text-primary);
+        }
+
+        .user-role {
+            font-size: var(--dancol-text-xs);
+            color: var(--dancol-text-muted);
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: var(--dancol-spacing-md);
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: var(--dancol-spacing-md);
+            }
+
+            .avatar-upload {
+                padding: var(--dancol-spacing-md);
+            }
+        }
+    </style>
+</body>
+</html>

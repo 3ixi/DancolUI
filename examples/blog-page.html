@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人博客示例 - Dancol UI Framework</title>
+
+    <!-- 防闪烁主题预加载脚本 -->
+    <script>
+        (function() {
+            // 立即从localStorage读取主题设置
+            try {
+                const savedTheme = localStorage.getItem('dancol-theme');
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else {
+                    // 默认主题
+                    document.documentElement.setAttribute('data-theme', 'light-blue');
+                }
+            } catch (e) {
+                // 如果localStorage不可用，使用默认主题
+                document.documentElement.setAttribute('data-theme', 'light-blue');
+            }
+        })();
+    </script>
+
+    <!-- Dancol CSS -->
+    <link rel="stylesheet" href="../assets/css/dancol-core.css">
+    <link rel="stylesheet" href="../assets/css/dancol-themes.css">
+    <link rel="stylesheet" href="../assets/css/dancol-components.css">
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <style>
+        /* 博客页面专用样式 */
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--dancol-spacing-lg);
+        }
+
+        /* 头部区域 */
+        .blog-header {
+            text-align: center;
+            padding: var(--dancol-spacing-xl) 0;
+            background: linear-gradient(135deg, var(--dancol-accent) 0%, var(--dancol-bg-secondary) 100%);
+            border-radius: var(--dancol-radius-lg);
+            margin-bottom: var(--dancol-spacing-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%236ba3d6" opacity="0.1"/></svg>') repeat;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .author-info {
+            position: relative;
+            z-index: 1;
+        }
+
+        .author-avatar {
+            margin-bottom: var(--dancol-spacing-md);
+        }
+
+        .author-name {
+            font-size: var(--dancol-text-2xl);
+            font-weight: 700;
+            color: var(--dancol-text-primary);
+            margin-bottom: var(--dancol-spacing-xs);
+        }
+
+        .author-bio {
+            color: var(--dancol-text-secondary);
+            font-size: var(--dancol-text-lg);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 导航菜单 */
+        .blog-nav {
+            background: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-md);
+            padding: var(--dancol-spacing-md);
+            margin-bottom: var(--dancol-spacing-xl);
+            box-shadow: var(--dancol-shadow-sm);
+        }
+
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            gap: var(--dancol-spacing-lg);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: var(--dancol-spacing-sm) var(--dancol-spacing-md);
+            border-radius: var(--dancol-radius-sm);
+            transition: all var(--dancol-transition-fast);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--dancol-primary);
+            background-color: var(--dancol-accent);
+        }
+
+        /* 主要内容区域 */
+        .blog-main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--dancol-spacing-xl);
+        }
+
+        /* 文章列表 */
+        .articles-section {
+            background: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-lg);
+            padding: var(--dancol-spacing-xl);
+            box-shadow: var(--dancol-shadow-sm);
+        }
+
+        .section-title {
+            font-size: var(--dancol-text-xl);
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            margin-bottom: var(--dancol-spacing-lg);
+            padding-bottom: var(--dancol-spacing-sm);
+            border-bottom: 2px solid var(--dancol-primary);
+        }
+
+        .article-card {
+            background: var(--dancol-bg-secondary);
+            border-radius: var(--dancol-radius-md);
+            padding: var(--dancol-spacing-lg);
+            margin-bottom: var(--dancol-spacing-lg);
+            transition: transform var(--dancol-transition-fast), box-shadow var(--dancol-transition-fast);
+        }
+
+        .article-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--dancol-shadow-md);
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--dancol-spacing-sm);
+            margin-bottom: var(--dancol-spacing-md);
+            font-size: var(--dancol-text-sm);
+            color: var(--dancol-text-muted);
+        }
+
+        .article-title {
+            font-size: var(--dancol-text-lg);
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            margin-bottom: var(--dancol-spacing-sm);
+        }
+
+        .article-title a {
+            color: inherit;
+            text-decoration: none;
+            transition: color var(--dancol-transition-fast);
+        }
+
+        .article-title a:hover {
+            color: var(--dancol-primary);
+        }
+
+        .article-excerpt {
+            color: var(--dancol-text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--dancol-spacing-md);
+        }
+
+        .article-tags {
+            display: flex;
+            gap: var(--dancol-spacing-xs);
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: var(--dancol-accent);
+            color: var(--dancol-primary);
+            padding: var(--dancol-spacing-xs) var(--dancol-spacing-sm);
+            border-radius: var(--dancol-radius-sm);
+            font-size: var(--dancol-text-xs);
+            font-weight: 500;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--dancol-spacing-lg);
+        }
+
+        .sidebar-widget {
+            background: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-lg);
+            padding: var(--dancol-spacing-lg);
+            box-shadow: var(--dancol-shadow-sm);
+        }
+
+        .widget-title {
+            font-size: var(--dancol-text-lg);
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            margin-bottom: var(--dancol-spacing-md);
+            padding-bottom: var(--dancol-spacing-sm);
+            border-bottom: 1px solid var(--dancol-border-light);
+        }
+
+        /* 图片画廊小部件 */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--dancol-spacing-xs);
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: var(--dancol-radius-sm);
+            cursor: pointer;
+            transition: transform var(--dancol-transition-fast);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 最新评论小部件 */
+        .comment-item {
+            display: flex;
+            gap: var(--dancol-spacing-sm);
+            margin-bottom: var(--dancol-spacing-md);
+            padding-bottom: var(--dancol-spacing-md);
+            border-bottom: 1px solid var(--dancol-border-light);
+        }
+
+        .comment-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            font-size: var(--dancol-text-sm);
+        }
+
+        .comment-text {
+            color: var(--dancol-text-secondary);
+            font-size: var(--dancol-text-sm);
+            margin-top: var(--dancol-spacing-xs);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .blog-container {
+                padding: var(--dancol-spacing-md);
+            }
+
+            .blog-main {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-list {
+                justify-content: flex-start;
+                gap: var(--dancol-spacing-md);
+            }
+
+            .articles-section,
+            .sidebar-widget {
+                padding: var(--dancol-spacing-md);
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .blog-header {
+                padding: var(--dancol-spacing-lg) var(--dancol-spacing-md);
+            }
+
+            .author-name {
+                font-size: var(--dancol-text-xl);
+            }
+
+            .author-bio {
+                font-size: var(--dancol-text-base);
+            }
+
+            .nav-list {
+                flex-direction: column;
+                gap: var(--dancol-spacing-xs);
+            }
+
+            .article-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--dancol-spacing-xs);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="blog-container">
+        <!-- 博客头部 -->
+        <header class="blog-header">
+            <div class="author-info">
+                <div class="author-avatar">
+                    <img src="../assets/images//avatar.jpg" 
+                         class="dancol-avatar dancol-avatar-2xl dancol-img-shadow" alt="博主头像">
+                </div>
+                <h1 class="author-name">张小明的技术博客</h1>
+                <p class="author-bio">专注前端开发，分享技术心得与生活感悟。热爱编程，追求优雅的代码和用户体验。</p>
+            </div>
+        </header>
+
+        <!-- 导航菜单 -->
+        <nav class="blog-nav">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="#" class="nav-link active">首页</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">技术文章</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">生活随笔</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">摄影作品</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">关于我</a></li>
+                <li class="nav-item"><a href="../api-reference.html" class="nav-link">返回文档</a></li>
+            </ul>
+        </nav>
+
+        <!-- 主要内容 -->
+        <main class="blog-main">
+            <!-- 文章列表 -->
+            <section class="articles-section">
+                <h2 class="section-title">最新文章</h2>
+                
+                <article class="article-card">
+                    <div class="article-meta">
+                        <img src="../assets/images//avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-xs" alt="作者">
+                        <span>张小明</span>
+                        <span>•</span>
+                        <span>2025年6月15日</span>
+                        <span>•</span>
+                        <span>5分钟阅读</span>
+                    </div>
+                    <h3 class="article-title">
+                        <a href="#">Dancol UI框架：打造优雅的前端界面</a>
+                    </h3>
+                    <img src="../assets/images//example.jpg" 
+                         class="dancol-img-full dancol-img-rounded" alt="文章配图" style="margin-bottom: 1rem;">
+                    <p class="article-excerpt">
+                        在现代前端开发中，一个优秀的UI框架能够大大提升开发效率和用户体验。今天我要介绍的Dancol UI框架，
+                        以其淡雅典雅的设计风格和强大的功能特性，为开发者提供了一套完整的解决方案...
+                    </p>
+                    <div class="article-tags">
+                        <span class="tag">前端开发</span>
+                        <span class="tag">UI框架</span>
+                        <span class="tag">CSS</span>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-meta">
+                        <img src="../assets/images//avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-xs" alt="作者">
+                        <span>张小明</span>
+                        <span>•</span>
+                        <span>2025年6月10日</span>
+                        <span>•</span>
+                        <span>8分钟阅读</span>
+                    </div>
+                    <h3 class="article-title">
+                        <a href="#">响应式设计的最佳实践</a>
+                    </h3>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                        <img src="../assets/images//example.jpg" 
+                             class="dancol-img-left dancol-img-rounded" alt="桌面端设计">
+                        <div>
+                            <p class="article-excerpt" style="margin-bottom: 0;">
+                                响应式设计已经成为现代网页开发的标准。本文将深入探讨如何使用CSS媒体查询、
+                                弹性布局和网格系统来创建适配各种设备的用户界面。我们将通过实际案例来演示
+                                最佳实践和常见陷阱的避免方法。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="article-tags">
+                        <span class="tag">响应式设计</span>
+                        <span class="tag">CSS Grid</span>
+                        <span class="tag">移动端</span>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-meta">
+                        <img src="../assets/images//avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-xs" alt="作者">
+                        <span>张小明</span>
+                        <span>•</span>
+                        <span>2025年6月5日</span>
+                        <span>•</span>
+                        <span>6分钟阅读</span>
+                    </div>
+                    <h3 class="article-title">
+                        <a href="#">JavaScript异步编程进阶</a>
+                    </h3>
+                    <img src="../assets/images//example.jpg" 
+                         class="dancol-img-right dancol-img-rounded dancol-img-shadow" alt="JavaScript异步编程">
+                    <p class="article-excerpt">
+                        异步编程是JavaScript的核心特性之一。吧啦吧啦吧啦吧啦吧啦吧啦吧啦吧啦吧啦，
+                        吧啦吧啦吧啦吧啦吧啦吧啦吧啦吧啦。本文将详细介绍这些概念，并通过实例展示
+                        如何在实际项目中优雅地处理异步操作，避免回调地狱和常见的异步陷阱。
+                    </p>
+                    <div class="article-tags">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">异步编程</span>
+                        <span class="tag">Promise</span>
+                        <span class="tag">Async/Await</span>
+                    </div>
+                </article>
+            </section>
+
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <!-- 关于我 -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">关于我</h3>
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <img src="../assets/images//avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-xl dancol-img-border-primary" alt="个人头像">
+                    </div>
+                    <p style="color: var(--dancol-text-secondary); font-size: var(--dancol-text-sm); text-align: center;">
+                        前端工程师，5年开发经验，专注于用户体验和代码质量。喜欢分享技术，热爱开源。
+                    </p>
+                </div>
+
+                <!-- 图片画廊 -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">摄影作品</h3>
+                    <div class="gallery-grid">
+                        <div class="gallery-item">
+                            <img src="../assets/images//example.jpg" alt="摄影作品1">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="../assets/images//example.jpg" alt="摄影作品2">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="../assets/images//example.jpg" alt="摄影作品3">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="../assets/images//example.jpg" alt="摄影作品4">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="../assets/images//example.jpg" alt="摄影作品5">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="../assets/images//example.jpg" alt="摄影作品6">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最新评论 -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">最新评论</h3>
+                    <div class="comment-item">
+                        <img src="../assets/images//avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-sm" alt="评论者">
+                        <div class="comment-content">
+                            <div class="comment-author">Alice</div>
+                            <div class="comment-text">这篇关于响应式设计的文章写得很好，学到了很多！</div>
+                        </div>
+                    </div>
+                    <div class="comment-item">
+                        <img src="../assets/images//avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-sm" alt="评论者">
+                        <div class="comment-content">
+                            <div class="comment-author">Bob</div>
+                            <div class="comment-text">Dancol UI框架看起来很不错，准备在项目中试用一下。</div>
+                        </div>
+                    </div>
+                    <div class="comment-item">
+                        <img src="../assets/images//avatar.jpg" 
+                             class="dancol-avatar dancol-avatar-sm" alt="评论者">
+                        <div class="comment-content">
+                            <div class="comment-author">Carol</div>
+                            <div class="comment-text">异步编程的例子很实用，解决了我的困惑。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 标签云 -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">标签云</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--dancol-spacing-xs);">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">HTML</span>
+                        <span class="tag">React</span>
+                        <span class="tag">Vue</span>
+                        <span class="tag">Node.js</span>
+                        <span class="tag">前端开发</span>
+                        <span class="tag">UI设计</span>
+                        <span class="tag">响应式</span>
+                        <span class="tag">性能优化</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Dancol JS -->
+    <script src="../assets/js/dancol-core.js"></script>
+    <script src="../assets/js/dancol-theme.js"></script>
+    <script src="../assets/js/dancol-toast.js"></script>
+
+    <script>
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 画廊图片点击事件
+            document.querySelectorAll('.gallery-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                        Dancol.Toast.info('图片画廊功能演示');
+                    }
+                });
+            });
+
+            // 文章卡片悬停效果增强
+            document.querySelectorAll('.article-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+            });
+
+            // 导航链接点击事件
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                        
+                        // 移除所有活跃状态
+                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        // 添加活跃状态到当前链接
+                        this.classList.add('active');
+                        
+                        if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                            Dancol.Toast.info(`切换到：${this.textContent}`);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

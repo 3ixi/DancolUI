@@ -1,0 +1,2899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API参考文档 - Dancol UI Framework</title>
+
+    <!-- 防闪烁主题预加载脚本 -->
+    <script>
+        (function() {
+            // 立即从localStorage读取主题设置
+            try {
+                const savedTheme = localStorage.getItem('dancol-theme');
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else {
+                    // 默认主题
+                    document.documentElement.setAttribute('data-theme', 'light-blue');
+                }
+            } catch (e) {
+                // 如果localStorage不可用，使用默认主题
+                document.documentElement.setAttribute('data-theme', 'light-blue');
+            }
+        })();
+    </script>
+
+    <!-- Dancol CSS -->
+    <link rel="stylesheet" href="assets/css/dancol-core.css">
+    <link rel="stylesheet" href="assets/css/dancol-themes.css">
+    <link rel="stylesheet" href="assets/css/dancol-components.css">
+
+
+    
+    <style>
+        .doc-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .sidebar {
+            position: sticky;
+            top: 6rem; /* 增加顶部距离，避免被导航栏遮挡 */
+            height: fit-content;
+            background-color: var(--dancol-bg-secondary);
+            border-radius: var(--dancol-radius-lg);
+            padding: 1.5rem;
+            max-height: calc(100vh - 8rem);
+            overflow-y: auto;
+        }
+        
+        .sidebar h3 {
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-nav a {
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color var(--dancol-transition-fast);
+            display: block;
+            padding: 0.25rem 0;
+        }
+        
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            color: var(--dancol-primary);
+        }
+        
+        .main-content {
+            min-width: 0;
+        }
+        
+        .doc-header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--dancol-border-light);
+        }
+        
+        .doc-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .doc-subtitle {
+            font-size: 1.2rem;
+            color: var(--dancol-text-secondary);
+        }
+        
+        .api-section {
+            margin: 3rem 0;
+            scroll-margin-top: 6rem; /* 增加滚动偏移，避免被导航栏遮挡 */
+        }
+        
+        .api-section h2 {
+            font-size: 2rem;
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--dancol-primary);
+        }
+        
+        .api-section h3 {
+            font-size: 1.5rem;
+            color: var(--dancol-text-primary);
+            margin: 2rem 0 1rem;
+        }
+        
+        .api-section h4 {
+            font-size: 1.25rem;
+            color: var(--dancol-text-primary);
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        .method-card {
+            background-color: var(--dancol-bg-secondary);
+            border: 1px solid var(--dancol-border-light);
+            border-radius: var(--dancol-radius-lg);
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .method-signature {
+            background-color: var(--dancol-bg-tertiary);
+            border: 1px solid var(--dancol-border-medium);
+            border-radius: var(--dancol-radius-md);
+            padding: 1rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+        }
+        
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background-color: var(--dancol-bg-primary);
+            border-radius: var(--dancol-radius-md);
+            overflow: hidden;
+        }
+        
+        .params-table th {
+            background-color: var(--dancol-bg-tertiary);
+            color: var(--dancol-text-primary);
+            font-weight: 600;
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--dancol-border-medium);
+        }
+        
+        .params-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--dancol-border-light);
+            vertical-align: top;
+        }
+        
+        .params-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .param-name {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-weight: 600;
+            color: var(--dancol-primary);
+        }
+        
+        .param-type {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            color: var(--dancol-text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .code-example {
+            background-color: var(--dancol-bg-tertiary);
+            border: 1px solid var(--dancol-border-medium);
+            border-radius: var(--dancol-radius-md);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-example pre {
+            margin: 0;
+            background: none;
+            padding: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--dancol-bg-primary);
+            border: 1px solid var(--dancol-border-medium);
+            border-radius: var(--dancol-radius-sm);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            color: var(--dancol-text-primary);
+            cursor: pointer;
+            transition: all var(--dancol-transition-fast);
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--dancol-primary);
+            color: var(--dancol-text-inverse);
+        }
+        
+        .navbar {
+            background-color: var(--dancol-bg-primary);
+            border-bottom: 1px solid var(--dancol-border-light);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--dancol-text-primary);
+        }
+        
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--dancol-transition-fast);
+        }
+        
+        .nav-link:hover {
+            color: var(--dancol-primary);
+        }
+        
+        .nav-link.active {
+            color: var(--dancol-primary);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: var(--dancol-radius-sm);
+            margin-left: 0.5rem;
+        }
+        
+        .badge-required {
+            background-color: var(--dancol-error);
+            color: var(--dancol-text-inverse);
+        }
+        
+        .badge-optional {
+            background-color: var(--dancol-bg-tertiary);
+            color: var(--dancol-text-muted);
+        }
+
+        /* 演示区域样式 */
+        .demo-section {
+            background-color: var(--dancol-bg-primary);
+            border: 1px solid var(--dancol-border-light);
+            border-radius: var(--dancol-radius-md);
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .demo-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--dancol-border-light);
+        }
+
+        .demo-content {
+            margin-bottom: 1rem;
+        }
+
+        .demo-content > * {
+            margin-bottom: 0.75rem;
+        }
+
+        .demo-content > *:last-child {
+            margin-bottom: 0;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .demo-item {
+            padding: 1rem;
+            background-color: var(--dancol-bg-secondary);
+            border-radius: var(--dancol-radius-sm);
+            text-align: center;
+        }
+
+        .text-alignment-demo {
+            background-color: var(--dancol-bg-secondary);
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: var(--dancol-radius-sm);
+            border-left: 3px solid var(--dancol-primary);
+        }
+
+        /* 汉堡菜单样式 */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--dancol-text-primary);
+            font-size: 1.5rem;
+        }
+
+        .mobile-sidebar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .mobile-sidebar-content {
+            position: absolute;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: var(--dancol-bg-primary);
+            box-shadow: var(--dancol-shadow-lg);
+            transition: left 0.3s ease-in-out;
+            overflow-y: auto;
+        }
+
+        .mobile-sidebar.active .mobile-sidebar-content {
+            left: 0;
+        }
+
+        .mobile-sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--dancol-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-sidebar-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--dancol-text-primary);
+            font-size: 1.5rem;
+        }
+
+        .mobile-sidebar-nav {
+            padding: 1rem;
+        }
+
+        .mobile-sidebar-nav h3 {
+            color: var(--dancol-text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .mobile-sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .mobile-sidebar-nav a {
+            color: var(--dancol-text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color var(--dancol-transition-fast);
+            display: block;
+            padding: 0.5rem 0;
+        }
+
+        .mobile-sidebar-nav a:hover,
+        .mobile-sidebar-nav a.active {
+            color: var(--dancol-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .doc-layout {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                display: none; /* 隐藏桌面端侧边栏 */
+            }
+
+            .mobile-menu-toggle {
+                display: block; /* 显示汉堡菜单按钮 */
+            }
+
+            .navbar-content {
+                padding: 0 1rem;
+            }
+
+            .navbar-nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .navbar-nav .nav-link {
+                font-size: 0.9rem;
+            }
+
+            .doc-title {
+                font-size: 2rem;
+            }
+
+            .doc-subtitle {
+                font-size: 1rem;
+            }
+
+            .method-card {
+                padding: 1.5rem;
+            }
+
+            .params-table {
+                font-size: 0.85rem;
+            }
+
+            .code-example {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-nav {
+                display: none; /* 在超小屏幕隐藏部分导航 */
+            }
+
+            .doc-layout {
+                padding: 0.5rem;
+            }
+
+            .doc-title {
+                font-size: 1.75rem;
+            }
+
+            .method-card {
+                padding: 1rem;
+            }
+
+            .params-table th,
+            .params-table td {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="mobile-menu-toggle" onclick="toggleMobileSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <a href="index.html" class="navbar-brand">
+                    <h1 style="margin: 0; font-size: 1.5rem; font-weight: 700;">Dancol UI</h1>
+                    <span style="font-size: 0.875rem; color: var(--dancol-text-muted);">丹青</span>
+                </a>
+            </div>
+            <div class="navbar-nav">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="getting-started.html" class="nav-link">快速开始</a>
+                <a href="api-reference.html" class="nav-link active">API文档</a>
+                <a href="examples.html" class="nav-link">示例</a>
+                <div class="dancol-theme-switcher">
+                    <button class="dancol-theme-switcher-button">
+                        <span class="dancol-theme-color light-blue"></span>
+                        <span class="dancol-theme-name">淡蓝主题</span>
+                        <svg class="dancol-theme-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div class="dancol-theme-switcher-dropdown"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 移动端侧边栏 -->
+    <div class="mobile-sidebar" id="mobileSidebar" onclick="closeMobileSidebar(event)">
+        <div class="mobile-sidebar-content" onclick="event.stopPropagation()">
+            <div class="mobile-sidebar-header">
+                <h3 style="margin: 0; color: var(--dancol-text-primary);">API文档</h3>
+                <button class="mobile-sidebar-close" onclick="closeMobileSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="mobile-sidebar-nav">
+                <ul>
+                    <li><a href="#overview" class="active" onclick="closeMobileSidebar()">概述</a></li>
+                    <li><a href="#core" onclick="closeMobileSidebar()">核心API</a></li>
+                    <li><a href="#theme" onclick="closeMobileSidebar()">主题系统</a></li>
+                    <li><a href="#toast" onclick="closeMobileSidebar()">Toast消息</a></li>
+                    <li><a href="#components" onclick="closeMobileSidebar()">组件样式</a></li>
+                    <li><a href="#utilities" onclick="closeMobileSidebar()">工具类</a></li>
+                    <li><a href="#text-alignment" onclick="closeMobileSidebar()">文字对齐</a></li>
+                    <li><a href="#image-layout" onclick="closeMobileSidebar()">图片排版</a></li>
+                    <li><a href="#table-styles" onclick="closeMobileSidebar()">表格样式</a></li>
+                    <li><a href="#events" onclick="closeMobileSidebar()">事件系统</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="doc-layout">
+        <!-- 侧边栏导航 -->
+        <aside class="sidebar">
+            <h3>API文档</h3>
+            <ul class="sidebar-nav">
+                <li><a href="#overview" class="active">概述</a></li>
+                <li><a href="#core">核心API</a></li>
+                <li><a href="#theme">主题系统</a></li>
+                <li><a href="#toast">Toast消息</a></li>
+                <li><a href="#components">组件样式</a></li>
+                <li><a href="#utilities">工具类</a></li>
+                <li><a href="#text-alignment">文字对齐</a></li>
+                <li><a href="#image-layout">图片排版</a></li>
+                <li><a href="#table-styles">表格样式</a></li>
+                <li><a href="#events">事件系统</a></li>
+            </ul>
+        </aside>
+
+        <!-- 主要内容 -->
+        <main class="main-content">
+            <!-- 文档头部 -->
+            <header class="doc-header">
+                <h1 class="doc-title">API参考文档</h1>
+                <p class="doc-subtitle">Dancol UI Framework 完整的API参考手册</p>
+            </header>
+
+            <!-- 概述 -->
+            <section id="overview" class="api-section">
+                <h2>概述</h2>
+                <p>Dancol UI Framework 提供了简洁而强大的API，让您能够轻松地创建美观的用户界面。框架主要包含以下几个核心模块：</p>
+                <ul>
+                    <li><strong>Dancol.utils</strong> - 核心工具函数</li>
+                    <li><strong>Dancol.Theme</strong> - 主题管理系统</li>
+                    <li><strong>Dancol.Toast</strong> - Toast消息系统</li>
+                </ul>
+                
+                <h3>全局对象</h3>
+                <p>框架会在全局作用域中创建 <code>Dancol</code> 对象，您可以通过这个对象访问所有的API。</p>
+                
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>// 检查框架是否已加载
+if (typeof Dancol !== 'undefined') {
+    console.log('Dancol UI Framework 版本:', Dancol.version);
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- 核心API -->
+            <section id="core" class="api-section">
+                <h2>核心API</h2>
+                <p>核心API提供了常用的DOM操作和工具函数。</p>
+
+                <div class="method-card">
+                    <h4>Dancol.utils.$(selector, context)</h4>
+                    <div class="method-signature">
+                        Element | null $(selector: string, context?: Element)
+                    </div>
+                    <p>选择单个DOM元素，类似于 <code>document.querySelector</code>。</p>
+                    
+                    <h5>参数</h5>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>类型</th>
+                                <th>必需</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">selector</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-required">必需</span></td>
+                                <td>CSS选择器字符串</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">context</span></td>
+                                <td><span class="param-type">Element</span></td>
+                                <td><span class="badge badge-optional">可选</span></td>
+                                <td>搜索上下文，默认为document</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>// 选择元素
+const button = Dancol.utils.$('.my-button');
+const input = Dancol.utils.$('input[type="text"]', form);</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Dancol.utils.$$(selector, context)</h4>
+                    <div class="method-signature">
+                        NodeList $$(selector: string, context?: Element)
+                    </div>
+                    <p>选择多个DOM元素，类似于 <code>document.querySelectorAll</code>。</p>
+                    
+                    <h5>参数</h5>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>类型</th>
+                                <th>必需</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">selector</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-required">必需</span></td>
+                                <td>CSS选择器字符串</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">context</span></td>
+                                <td><span class="param-type">Element</span></td>
+                                <td><span class="badge badge-optional">可选</span></td>
+                                <td>搜索上下文，默认为document</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>// 选择所有按钮
+const buttons = Dancol.utils.$$('.dancol-btn');
+buttons.forEach(btn => {
+    console.log(btn.textContent);
+});</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Dancol.utils.on(element, event, handler, options)</h4>
+                    <div class="method-signature">
+                        void on(element: Element, event: string, handler: Function, options?: boolean | Object)
+                    </div>
+                    <p>为元素添加事件监听器。</p>
+                    
+                    <h5>参数</h5>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>类型</th>
+                                <th>必需</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">element</span></td>
+                                <td><span class="param-type">Element</span></td>
+                                <td><span class="badge badge-required">必需</span></td>
+                                <td>目标DOM元素</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">event</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-required">必需</span></td>
+                                <td>事件类型</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">handler</span></td>
+                                <td><span class="param-type">Function</span></td>
+                                <td><span class="badge badge-required">必需</span></td>
+                                <td>事件处理函数</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">options</span></td>
+                                <td><span class="param-type">boolean | Object</span></td>
+                                <td><span class="badge badge-optional">可选</span></td>
+                                <td>事件选项</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>const button = Dancol.utils.$('#my-button');
+Dancol.utils.on(button, 'click', function(e) {
+    console.log('按钮被点击了');
+});</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 主题系统API -->
+            <section id="theme" class="api-section">
+                <h2>主题系统</h2>
+                <p>主题系统允许您动态切换应用的视觉主题。</p>
+
+                <div class="method-card">
+                    <h4>Dancol.Theme.applyTheme(theme)</h4>
+                    <div class="method-signature">
+                        void applyTheme(theme: string)
+                    </div>
+                    <p>应用指定的主题。</p>
+
+                    <h5>参数</h5>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>类型</th>
+                                <th>必需</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">theme</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-required">必需</span></td>
+                                <td>主题名称：'light-blue' | 'light-green' | 'cream' | 'warm' | 'dark'</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>// 切换到淡绿主题
+Dancol.Theme.applyTheme('light-green');
+
+// 切换到米黄主题
+Dancol.Theme.applyTheme('cream');</code></pre>
+                    </div>
+
+                    <div class="demo-section">
+                        <div class="demo-title">🎨 主题切换演示</div>
+                        <div class="demo-content">
+                            <p>点击下面的按钮体验不同主题效果：</p>
+                            <div class="demo-grid">
+                                <button class="dancol-btn dancol-btn-primary" onclick="demoApplyTheme('light-blue')">淡蓝主题</button>
+                                <button class="dancol-btn dancol-btn-success" onclick="demoApplyTheme('light-green')">淡绿主题</button>
+                                <button class="dancol-btn dancol-btn-warning" onclick="demoApplyTheme('cream')">米黄主题</button>
+                                <button class="dancol-btn dancol-btn-secondary" onclick="demoApplyTheme('warm')">暖色主题</button>
+                            </div>
+                            <div style="margin-top: 1rem; padding: 1rem; background-color: var(--dancol-bg-secondary); border-radius: var(--dancol-radius-sm);">
+                                <strong>当前主题：</strong><span id="currentThemeDisplay">淡蓝主题</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Dancol.Theme.getCurrentTheme()</h4>
+                    <div class="method-signature">
+                        string getCurrentTheme()
+                    </div>
+                    <p>获取当前应用的主题名称。</p>
+
+                    <h5>返回值</h5>
+                    <p>返回当前主题的名称字符串。</p>
+
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>const currentTheme = Dancol.Theme.getCurrentTheme();
+console.log('当前主题:', currentTheme);</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Dancol.Theme.getAllThemes()</h4>
+                    <div class="method-signature">
+                        Object getAllThemes()
+                    </div>
+                    <p>获取所有可用主题的信息。</p>
+
+                    <h5>返回值</h5>
+                    <p>返回包含所有主题信息的对象。</p>
+
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>const themes = Dancol.Theme.getAllThemes();
+Object.keys(themes).forEach(key => {
+    console.log(`${key}: ${themes[key].name}`);
+});</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Toast消息API -->
+            <section id="toast" class="api-section">
+                <h2>Toast消息</h2>
+                <p>Toast消息系统提供了丰富的消息提示功能。</p>
+
+                <div class="method-card">
+                    <h4>Dancol.Toast.show(type, message, options)</h4>
+                    <div class="method-signature">
+                        string show(type: string, message: string | Object, options?: Object)
+                    </div>
+                    <p>显示Toast消息。</p>
+
+                    <h5>参数</h5>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>类型</th>
+                                <th>必需</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">type</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-required">必需</span></td>
+                                <td>消息类型：'success' | 'warning' | 'error' | 'info'</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">message</span></td>
+                                <td><span class="param-type">string | Object</span></td>
+                                <td><span class="badge badge-required">必需</span></td>
+                                <td>消息内容或配置对象</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">options</span></td>
+                                <td><span class="param-type">Object</span></td>
+                                <td><span class="badge badge-optional">可选</span></td>
+                                <td>额外配置选项</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5>配置选项</h5>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>选项名</th>
+                                <th>类型</th>
+                                <th>默认值</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">position</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td>'top-right'</td>
+                                <td>显示位置</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">duration</span></td>
+                                <td><span class="param-type">number</span></td>
+                                <td>4000</td>
+                                <td>显示时长（毫秒），0表示不自动关闭</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">closable</span></td>
+                                <td><span class="param-type">boolean</span></td>
+                                <td>true</td>
+                                <td>是否显示关闭按钮</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">showIcon</span></td>
+                                <td><span class="param-type">boolean</span></td>
+                                <td>true</td>
+                                <td>是否显示图标</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">style</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td>'default'</td>
+                                <td>Toast样式：'default' | 'simple'</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>// 基本用法
+const toastId = Dancol.Toast.show('success', '操作成功！');
+
+// 自定义配置
+Dancol.Toast.show('warning', '请注意', {
+    position: 'top-center',
+    duration: 5000,
+    closable: false
+});
+
+// 使用配置对象
+Dancol.Toast.show('info', {
+    title: '提示',
+    message: '这是详细信息',
+    position: 'bottom-right'
+});</code></pre>
+                    </div>
+
+                    <div class="demo-section">
+                        <div class="demo-title">💬 Toast消息演示</div>
+                        <div class="demo-content">
+                            <p>点击下面的按钮体验不同类型的Toast消息：</p>
+                            <div class="demo-grid">
+                                <button class="dancol-btn dancol-btn-success" onclick="demoToast('success', '操作成功！')">成功消息</button>
+                                <button class="dancol-btn dancol-btn-warning" onclick="demoToast('warning', '请注意这个警告')">警告消息</button>
+                                <button class="dancol-btn dancol-btn-error" onclick="demoToast('error', '发生了错误')">错误消息</button>
+                                <button class="dancol-btn dancol-btn-info" onclick="demoToast('info', '这是一条信息')">信息消息</button>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <h6>不同位置演示：</h6>
+                                <div class="demo-grid">
+                                    <button class="dancol-btn dancol-btn-outline" onclick="demoToastPosition('top-left')">左上角</button>
+                                    <button class="dancol-btn dancol-btn-outline" onclick="demoToastPosition('top-center')">顶部居中</button>
+                                    <button class="dancol-btn dancol-btn-outline" onclick="demoToastPosition('top-right')">右上角</button>
+                                    <button class="dancol-btn dancol-btn-outline" onclick="demoToastPosition('bottom-right')">右下角</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h4>便捷方法</h4>
+                    <p>Toast系统提供了便捷的方法来显示不同类型的消息。</p>
+
+                    <div class="method-signature">
+                        string success(message: string | Object, options?: Object)<br>
+                        string warning(message: string | Object, options?: Object)<br>
+                        string error(message: string | Object, options?: Object)<br>
+                        string info(message: string | Object, options?: Object)
+                    </div>
+
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>// 便捷方法
+Dancol.Toast.success('操作成功！');
+Dancol.Toast.warning('请注意这个警告');
+Dancol.Toast.error('发生了错误');
+Dancol.Toast.info('这是一条信息');
+
+// 简洁样式便捷方法
+Dancol.Toast.simpleSuccess('操作成功！');
+Dancol.Toast.simpleError('发生错误');
+Dancol.Toast.simpleInfo('简洁信息');</code></pre>
+                    </div>
+
+                    <div class="demo-section">
+                        <div class="demo-title">⚡ 便捷方法演示</div>
+                        <div class="demo-content">
+                            <p>便捷方法让显示Toast消息更加简单：</p>
+                            <div class="demo-grid">
+                                <button class="dancol-btn dancol-btn-success" onclick="Dancol.Toast.success('操作成功！')">success()</button>
+                                <button class="dancol-btn dancol-btn-warning" onclick="Dancol.Toast.warning('请注意警告')">warning()</button>
+                                <button class="dancol-btn dancol-btn-error" onclick="Dancol.Toast.error('发生错误')">error()</button>
+                                <button class="dancol-btn dancol-btn-info" onclick="Dancol.Toast.info('信息提示')">info()</button>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <h6>简洁样式：</h6>
+                                <div class="demo-grid">
+                                    <button class="dancol-btn dancol-btn-outline" onclick="Dancol.Toast.simpleSuccess('简洁成功')">simpleSuccess()</button>
+                                    <button class="dancol-btn dancol-btn-outline" onclick="Dancol.Toast.simpleError('简洁错误')">simpleError()</button>
+                                    <button class="dancol-btn dancol-btn-outline" onclick="Dancol.Toast.simpleInfo('简洁信息')">simpleInfo()</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Dancol.Toast.hide(toastId)</h4>
+                    <div class="method-signature">
+                        void hide(toastId: string)
+                    </div>
+                    <p>手动隐藏指定的Toast消息。</p>
+
+                    <h5>参数</h5>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>类型</th>
+                                <th>必需</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">toastId</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-required">必需</span></td>
+                                <td>Toast的唯一标识符</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>// 显示Toast并获取ID
+const toastId = Dancol.Toast.show('info', '这条消息将在3秒后关闭', {
+    duration: 0 // 不自动关闭
+});
+
+// 3秒后手动关闭
+setTimeout(() => {
+    Dancol.Toast.hide(toastId);
+}, 3000);</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Dancol.Toast.clear(position)</h4>
+                    <div class="method-signature">
+                        void clear(position?: string)
+                    </div>
+                    <p>清除所有或指定位置的Toast消息。</p>
+
+                    <h5>参数</h5>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>类型</th>
+                                <th>必需</th>
+                                <th>描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">position</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-optional">可选</span></td>
+                                <td>要清除的位置，不传则清除所有</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5>示例</h5>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>// 清除所有Toast
+Dancol.Toast.clear();
+
+// 清除右上角的Toast
+Dancol.Toast.clear('top-right');</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 组件样式 -->
+            <section id="components" class="api-section">
+                <h2>组件样式</h2>
+                <p>Dancol UI 提供了丰富的CSS组件类，用于快速构建界面。</p>
+
+                <h3>按钮组件</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 基本按钮 --&gt;
+&lt;button class="dancol-btn dancol-btn-primary"&gt;主要按钮&lt;/button&gt;
+&lt;button class="dancol-btn dancol-btn-secondary"&gt;次要按钮&lt;/button&gt;
+&lt;button class="dancol-btn dancol-btn-outline"&gt;轮廓按钮&lt;/button&gt;
+
+&lt;!-- 不同尺寸 --&gt;
+&lt;button class="dancol-btn dancol-btn-primary dancol-btn-sm"&gt;小按钮&lt;/button&gt;
+&lt;button class="dancol-btn dancol-btn-primary dancol-btn-lg"&gt;大按钮&lt;/button&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">🔘 按钮组件演示</div>
+                    <div class="demo-content">
+                        <div>
+                            <h6>基本按钮：</h6>
+                            <button class="dancol-btn dancol-btn-primary">主要按钮</button>
+                            <button class="dancol-btn dancol-btn-secondary">次要按钮</button>
+                            <button class="dancol-btn dancol-btn-success">成功按钮</button>
+                            <button class="dancol-btn dancol-btn-warning">警告按钮</button>
+                            <button class="dancol-btn dancol-btn-error">错误按钮</button>
+                            <button class="dancol-btn dancol-btn-outline">轮廓按钮</button>
+                        </div>
+                        <div>
+                            <h6>不同尺寸：</h6>
+                            <button class="dancol-btn dancol-btn-primary dancol-btn-sm">小按钮</button>
+                            <button class="dancol-btn dancol-btn-primary">默认按钮</button>
+                            <button class="dancol-btn dancol-btn-primary dancol-btn-lg">大按钮</button>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>卡片组件</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;div class="dancol-card"&gt;
+    &lt;div class="dancol-card-header"&gt;
+        &lt;h5 class="dancol-card-title"&gt;卡片标题&lt;/h5&gt;
+    &lt;/div&gt;
+    &lt;div class="dancol-card-body"&gt;
+        &lt;p class="dancol-card-text"&gt;卡片内容文本&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="dancol-card-footer"&gt;
+        &lt;button class="dancol-btn dancol-btn-primary"&gt;操作&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <h3>表单组件</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;div class="dancol-form-group"&gt;
+    &lt;label class="dancol-form-label"&gt;用户名&lt;/label&gt;
+    &lt;input type="text" class="dancol-form-control" placeholder="请输入用户名"&gt;
+    &lt;div class="dancol-form-text"&gt;帮助文本&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- 验证状态 --&gt;
+&lt;input type="email" class="dancol-form-control is-valid"&gt;
+&lt;div class="dancol-valid-feedback"&gt;格式正确&lt;/div&gt;
+
+&lt;input type="password" class="dancol-form-control is-invalid"&gt;
+&lt;div class="dancol-invalid-feedback"&gt;密码太短&lt;/div&gt;</code></pre>
+                </div>
+
+                <h3>徽章组件</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;span class="dancol-badge dancol-badge-primary"&gt;主要&lt;/span&gt;
+&lt;span class="dancol-badge dancol-badge-success"&gt;成功&lt;/span&gt;
+&lt;span class="dancol-badge dancol-badge-warning"&gt;警告&lt;/span&gt;
+&lt;span class="dancol-badge dancol-badge-error"&gt;错误&lt;/span&gt;
+&lt;span class="dancol-badge dancol-badge-info"&gt;信息&lt;/span&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">🏷️ 徽章组件演示</div>
+                    <div class="demo-content">
+                        <div>
+                            <h6>基本徽章：</h6>
+                            <span class="dancol-badge dancol-badge-primary">主要</span>
+                            <span class="dancol-badge dancol-badge-secondary">次要</span>
+                            <span class="dancol-badge dancol-badge-success">成功</span>
+                            <span class="dancol-badge dancol-badge-warning">警告</span>
+                            <span class="dancol-badge dancol-badge-error">错误</span>
+                            <span class="dancol-badge dancol-badge-info">信息</span>
+                        </div>
+                        <div>
+                            <h6>实际应用场景：</h6>
+                            <p>消息 <span class="dancol-badge dancol-badge-error">3</span></p>
+                            <p>通知 <span class="dancol-badge dancol-badge-warning">99+</span></p>
+                            <p>状态：<span class="dancol-badge dancol-badge-success">在线</span></p>
+                            <p>版本：<span class="dancol-badge dancol-badge-info">v1.0.0</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>警告框组件</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;div class="dancol-alert dancol-alert-success"&gt;
+    &lt;strong&gt;成功！&lt;/strong&gt; 操作已成功完成。
+&lt;/div&gt;
+
+&lt;div class="dancol-alert dancol-alert-warning"&gt;
+    &lt;strong&gt;警告！&lt;/strong&gt; 请注意这个重要信息。
+&lt;/div&gt;
+
+&lt;div class="dancol-alert dancol-alert-error"&gt;
+    &lt;strong&gt;错误！&lt;/strong&gt; 发生了一个错误。
+&lt;/div&gt;</code></pre>
+                </div>
+            </section>
+
+            <!-- 工具类 -->
+            <section id="utilities" class="api-section">
+                <h2>工具类</h2>
+                <p>Dancol UI 提供了丰富的CSS工具类，用于快速调整样式。</p>
+
+                <h3>布局工具类</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 容器 --&gt;
+&lt;div class="dancol-container"&gt;固定宽度容器&lt;/div&gt;
+&lt;div class="dancol-container-fluid"&gt;全宽容器&lt;/div&gt;
+
+&lt;!-- 网格系统 --&gt;
+&lt;div class="dancol-row"&gt;
+    &lt;div class="dancol-col-6"&gt;6列宽度&lt;/div&gt;
+    &lt;div class="dancol-col-6"&gt;6列宽度&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <h3>Flexbox工具类</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 显示类型 --&gt;
+&lt;div class="dancol-d-flex"&gt;Flex容器&lt;/div&gt;
+&lt;div class="dancol-d-inline-flex"&gt;内联Flex容器&lt;/div&gt;
+&lt;div class="dancol-d-block"&gt;块级元素&lt;/div&gt;
+&lt;div class="dancol-d-none"&gt;隐藏元素&lt;/div&gt;
+
+&lt;!-- Flex方向 --&gt;
+&lt;div class="dancol-d-flex dancol-flex-row"&gt;水平排列&lt;/div&gt;
+&lt;div class="dancol-d-flex dancol-flex-column"&gt;垂直排列&lt;/div&gt;
+
+&lt;!-- 对齐方式 --&gt;
+&lt;div class="dancol-d-flex dancol-justify-center dancol-align-center"&gt;
+    居中对齐
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <h3>间距工具类</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 外边距 --&gt;
+&lt;div class="dancol-m-0"&gt;无外边距&lt;/div&gt;
+&lt;div class="dancol-m-1"&gt;小外边距&lt;/div&gt;
+&lt;div class="dancol-m-2"&gt;中等外边距&lt;/div&gt;
+&lt;div class="dancol-m-3"&gt;大外边距&lt;/div&gt;
+
+&lt;!-- 内边距 --&gt;
+&lt;div class="dancol-p-0"&gt;无内边距&lt;/div&gt;
+&lt;div class="dancol-p-1"&gt;小内边距&lt;/div&gt;
+&lt;div class="dancol-p-2"&gt;中等内边距&lt;/div&gt;
+&lt;div class="dancol-p-3"&gt;大内边距&lt;/div&gt;</code></pre>
+                </div>
+
+                <h3>文本工具类</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 文本对齐 --&gt;
+&lt;p class="dancol-text-left"&gt;左对齐文本&lt;/p&gt;
+&lt;p class="dancol-text-center"&gt;居中对齐文本&lt;/p&gt;
+&lt;p class="dancol-text-right"&gt;右对齐文本&lt;/p&gt;
+&lt;p class="dancol-text-justify"&gt;两端对齐文本&lt;/p&gt;
+
+&lt;!-- 文本颜色 --&gt;
+&lt;p class="dancol-text-primary"&gt;主要文本颜色&lt;/p&gt;
+&lt;p class="dancol-text-secondary"&gt;次要文本颜色&lt;/p&gt;
+&lt;p class="dancol-text-muted"&gt;静音文本颜色&lt;/p&gt;
+&lt;p class="dancol-text-success"&gt;成功文本颜色&lt;/p&gt;
+&lt;p class="dancol-text-warning"&gt;警告文本颜色&lt;/p&gt;
+&lt;p class="dancol-text-error"&gt;错误文本颜色&lt;/p&gt;
+
+&lt;!-- 文本大小 --&gt;
+&lt;p class="dancol-text-xs"&gt;超小文本&lt;/p&gt;
+&lt;p class="dancol-text-sm"&gt;小文本&lt;/p&gt;
+&lt;p class="dancol-text-base"&gt;基础文本&lt;/p&gt;
+&lt;p class="dancol-text-lg"&gt;大文本&lt;/p&gt;
+&lt;p class="dancol-text-xl"&gt;超大文本&lt;/p&gt;
+
+&lt;!-- 文本样式 --&gt;
+&lt;p class="dancol-text-bold"&gt;粗体文本&lt;/p&gt;
+&lt;p class="dancol-text-italic"&gt;斜体文本&lt;/p&gt;
+&lt;p class="dancol-text-underline"&gt;下划线文本&lt;/p&gt;
+&lt;p class="dancol-text-uppercase"&gt;大写文本&lt;/p&gt;
+&lt;p class="dancol-text-lowercase"&gt;小写文本&lt;/p&gt;
+&lt;p class="dancol-text-capitalize"&gt;首字母大写文本&lt;/p&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📝 文本工具类演示</div>
+                    <div class="demo-content">
+                        <div>
+                            <h6>文本对齐：</h6>
+                            <div class="text-alignment-demo dancol-text-left">左对齐文本 - 这是一段比较长的文本，用来演示文本对齐的效果。</div>
+                            <div class="text-alignment-demo dancol-text-center">居中对齐文本 - 这是一段比较长的文本，用来演示文本对齐的效果。</div>
+                            <div class="text-alignment-demo dancol-text-right">右对齐文本 - 这是一段比较长的文本，用来演示文本对齐的效果。</div>
+                            <div class="text-alignment-demo dancol-text-justify">两端对齐文本 - 这是一段比较长的文本，用来演示文本对齐的效果。两端对齐会让文本在容器中均匀分布。</div>
+                        </div>
+                        <div>
+                            <h6>文本颜色：</h6>
+                            <p class="dancol-text-primary">主要文本颜色</p>
+                            <p class="dancol-text-secondary">次要文本颜色</p>
+                            <p class="dancol-text-muted">静音文本颜色</p>
+                            <p class="dancol-text-success">成功文本颜色</p>
+                            <p class="dancol-text-warning">警告文本颜色</p>
+                            <p class="dancol-text-error">错误文本颜色</p>
+                        </div>
+                        <div>
+                            <h6>文本大小：</h6>
+                            <p class="dancol-text-xs">超小文本 (12px)</p>
+                            <p class="dancol-text-sm">小文本 (14px)</p>
+                            <p class="dancol-text-base">基础文本 (16px)</p>
+                            <p class="dancol-text-lg">大文本 (18px)</p>
+                            <p class="dancol-text-xl">超大文本 (20px)</p>
+                        </div>
+                        <div>
+                            <h6>文本样式：</h6>
+                            <p class="dancol-text-bold">粗体文本</p>
+                            <p class="dancol-text-italic">斜体文本</p>
+                            <p class="dancol-text-underline">下划线文本</p>
+                            <p class="dancol-text-uppercase">uppercase text</p>
+                            <p class="dancol-text-lowercase">LOWERCASE TEXT</p>
+                            <p class="dancol-text-capitalize">capitalize text</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 文字对齐专区 -->
+            <section id="text-alignment" class="api-section">
+                <h2>文字对齐样式控制</h2>
+                <p>Dancol UI 提供了完整的文字对齐和样式控制工具类，让您能够精确控制文本的显示效果。</p>
+
+                <h3>文本对齐方式</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 基本对齐方式 --&gt;
+&lt;p class="dancol-text-left"&gt;左对齐文本&lt;/p&gt;
+&lt;p class="dancol-text-center"&gt;居中对齐文本&lt;/p&gt;
+&lt;p class="dancol-text-right"&gt;右对齐文本&lt;/p&gt;
+&lt;p class="dancol-text-justify"&gt;两端对齐文本&lt;/p&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📐 文本对齐演示</div>
+                    <div class="demo-content">
+                        <div>
+                            <h6>选择对齐方式：</h6>
+                            <div class="demo-grid">
+                                <button class="dancol-btn dancol-btn-outline" onclick="changeTextAlignment('left')">左对齐</button>
+                                <button class="dancol-btn dancol-btn-outline" onclick="changeTextAlignment('center')">居中对齐</button>
+                                <button class="dancol-btn dancol-btn-outline" onclick="changeTextAlignment('right')">右对齐</button>
+                                <button class="dancol-btn dancol-btn-outline" onclick="changeTextAlignment('justify')">两端对齐</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h6>实时预览：</h6>
+                            <div id="textAlignmentDemo" class="text-alignment-demo dancol-text-left">
+                                这是一段演示文本，您可以通过上面的按钮来改变这段文本的对齐方式。这段文本足够长，可以很好地展示不同对齐方式的效果。左对齐是最常见的对齐方式，居中对齐常用于标题，右对齐适合数字或特殊布局，两端对齐让文本在容器中均匀分布。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>文本颜色控制</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 语义化颜色 --&gt;
+&lt;p class="dancol-text-primary"&gt;主要文本颜色&lt;/p&gt;
+&lt;p class="dancol-text-secondary"&gt;次要文本颜色&lt;/p&gt;
+&lt;p class="dancol-text-success"&gt;成功状态颜色&lt;/p&gt;
+&lt;p class="dancol-text-warning"&gt;警告状态颜色&lt;/p&gt;
+&lt;p class="dancol-text-error"&gt;错误状态颜色&lt;/p&gt;
+&lt;p class="dancol-text-info"&gt;信息状态颜色&lt;/p&gt;
+&lt;p class="dancol-text-muted"&gt;静音文本颜色&lt;/p&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">🎨 文本颜色演示</div>
+                    <div class="demo-content">
+                        <div>
+                            <h6>选择文本颜色：</h6>
+                            <div class="demo-grid">
+                                <button class="dancol-btn dancol-btn-primary" onclick="changeTextColor('primary')">主要色</button>
+                                <button class="dancol-btn dancol-btn-secondary" onclick="changeTextColor('secondary')">次要色</button>
+                                <button class="dancol-btn dancol-btn-success" onclick="changeTextColor('success')">成功色</button>
+                                <button class="dancol-btn dancol-btn-warning" onclick="changeTextColor('warning')">警告色</button>
+                                <button class="dancol-btn dancol-btn-error" onclick="changeTextColor('error')">错误色</button>
+                                <button class="dancol-btn dancol-btn-info" onclick="changeTextColor('info')">信息色</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h6>实时预览：</h6>
+                            <div id="textColorDemo" class="text-alignment-demo dancol-text-primary">
+                                这段文本的颜色会根据您的选择而改变。不同的颜色适用于不同的场景：主要色用于重要内容，成功色表示正面结果，警告色提醒注意，错误色表示问题，信息色用于提示。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>文本大小控制</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 文本大小 --&gt;
+&lt;p class="dancol-text-xs"&gt;超小文本 (12px)&lt;/p&gt;
+&lt;p class="dancol-text-sm"&gt;小文本 (14px)&lt;/p&gt;
+&lt;p class="dancol-text-base"&gt;基础文本 (16px)&lt;/p&gt;
+&lt;p class="dancol-text-lg"&gt;大文本 (18px)&lt;/p&gt;
+&lt;p class="dancol-text-xl"&gt;超大文本 (20px)&lt;/p&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📏 文本大小演示</div>
+                    <div class="demo-content">
+                        <div>
+                            <h6>选择文本大小：</h6>
+                            <div class="demo-grid">
+                                <button class="dancol-btn dancol-btn-outline" onclick="changeTextSize('xs')">超小 (12px)</button>
+                                <button class="dancol-btn dancol-btn-outline" onclick="changeTextSize('sm')">小 (14px)</button>
+                                <button class="dancol-btn dancol-btn-outline" onclick="changeTextSize('base')">基础 (16px)</button>
+                                <button class="dancol-btn dancol-btn-outline" onclick="changeTextSize('lg')">大 (18px)</button>
+                                <button class="dancol-btn dancol-btn-outline" onclick="changeTextSize('xl')">超大 (20px)</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h6>实时预览：</h6>
+                            <div id="textSizeDemo" class="text-alignment-demo dancol-text-base">
+                                这段文本的大小会根据您的选择而改变。不同的文本大小适用于不同的内容层级：超小文本用于辅助信息，小文本用于说明，基础文本用于正文，大文本用于重点，超大文本用于标题。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>文本样式控制</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 字重控制 --&gt;
+&lt;p class="dancol-text-light"&gt;细体文本&lt;/p&gt;
+&lt;p class="dancol-text-normal"&gt;正常文本&lt;/p&gt;
+&lt;p class="dancol-text-medium"&gt;中等文本&lt;/p&gt;
+&lt;p class="dancol-text-semibold"&gt;半粗体文本&lt;/p&gt;
+&lt;p class="dancol-text-bold"&gt;粗体文本&lt;/p&gt;
+
+&lt;!-- 文本装饰 --&gt;
+&lt;p class="dancol-text-italic"&gt;斜体文本&lt;/p&gt;
+&lt;p class="dancol-text-underline"&gt;下划线文本&lt;/p&gt;
+&lt;p class="dancol-text-line-through"&gt;删除线文本&lt;/p&gt;
+
+&lt;!-- 大小写转换 --&gt;
+&lt;p class="dancol-text-uppercase"&gt;全大写文本&lt;/p&gt;
+&lt;p class="dancol-text-lowercase"&gt;全小写文本&lt;/p&gt;
+&lt;p class="dancol-text-capitalize"&gt;首字母大写文本&lt;/p&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">✨ 文本样式演示</div>
+                    <div class="demo-content">
+                        <div>
+                            <h6>字重控制：</h6>
+                            <p class="dancol-text-light">细体文本 (300)</p>
+                            <p class="dancol-text-normal">正常文本 (400)</p>
+                            <p class="dancol-text-medium">中等文本 (500)</p>
+                            <p class="dancol-text-semibold">半粗体文本 (600)</p>
+                            <p class="dancol-text-bold">粗体文本 (700)</p>
+                        </div>
+                        <div>
+                            <h6>文本装饰：</h6>
+                            <p class="dancol-text-italic">斜体文本</p>
+                            <p class="dancol-text-underline">下划线文本</p>
+                            <p class="dancol-text-line-through">删除线文本</p>
+                        </div>
+                        <div>
+                            <h6>大小写转换：</h6>
+                            <p class="dancol-text-uppercase">uppercase text example</p>
+                            <p class="dancol-text-lowercase">LOWERCASE TEXT EXAMPLE</p>
+                            <p class="dancol-text-capitalize">capitalize text example</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 图片排版专区 -->
+            <section id="image-layout" class="api-section">
+                <h2>图片排版样式控制</h2>
+                <p>Dancol UI 提供了完整的图片排版和样式控制工具类，让您能够精确控制图片的显示效果，包括对齐、尺寸、形状、阴影、滤镜等多种效果。</p>
+
+                <h3>图片对齐方式</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 图片对齐方式 --&gt;
+&lt;img src="image.jpg" class="dancol-img-left" alt="左对齐图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-right" alt="右对齐图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-center" alt="居中图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-inline" alt="行内图片"&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📷 图片对齐演示</div>
+                    <div class="demo-content">
+                        <div style="margin-bottom: 1rem;">
+                            <strong>左对齐图片：</strong>
+                            <div style="background-color: var(--dancol-bg-secondary); padding: 1rem; border-radius: var(--dancol-radius-sm); margin: 0.5rem 0;">
+                                <img src="assets/images/example.jpg" class="dancol-img-left" alt="左对齐示例">
+                                <p>这是一段文字，用来演示左对齐图片的效果。图片会浮动到左侧，文字会环绕在图片的右侧。这种布局常用于文章配图或产品介绍页面。</p>
+                                <div style="clear: both;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <strong>右对齐图片：</strong>
+                            <div style="background-color: var(--dancol-bg-secondary); padding: 1rem; border-radius: var(--dancol-radius-sm); margin: 0.5rem 0;">
+                                <img src="assets/images/example.jpg" class="dancol-img-right" alt="右对齐示例">
+                                <p>这是一段文字，用来演示右对齐图片的效果。图片会浮动到右侧，文字会环绕在图片的左侧。这种布局同样常用于文章配图。</p>
+                                <div style="clear: both;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <strong>居中图片：</strong>
+                            <div style="background-color: var(--dancol-bg-secondary); padding: 1rem; border-radius: var(--dancol-radius-sm); margin: 0.5rem 0;">
+                                <img src="assets/images/example.jpg" class="dancol-img-center" alt="居中示例">
+                                <p style="text-align: center;">居中图片会独占一行，适合作为重点展示的图片。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>图片尺寸控制</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 图片尺寸控制 --&gt;
+&lt;img src="image.jpg" class="dancol-img-xs" alt="超小图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-sm" alt="小图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-md" alt="中等图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-lg" alt="大图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-xl" alt="超大图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-full" alt="全宽图片"&gt;
+
+&lt;!-- 图片填充方式 --&gt;
+&lt;div style="width: 300px; height: 200px;"&gt;
+    &lt;img src="image.jpg" class="dancol-img-cover" alt="覆盖填充"&gt;
+&lt;/div&gt;
+&lt;div style="width: 300px; height: 200px;"&gt;
+    &lt;img src="image.jpg" class="dancol-img-contain" alt="包含填充"&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📐 图片尺寸演示</div>
+                    <div class="demo-content">
+                        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-xs" alt="超小">
+                                <div style="font-size: 0.8rem; margin-top: 0.25rem;">超小 (64px)</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-sm" alt="小">
+                                <div style="font-size: 0.8rem; margin-top: 0.25rem;">小 (128px)</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-md" alt="中">
+                                <div style="font-size: 0.8rem; margin-top: 0.25rem;">中 (256px)</div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <strong>全宽图片：</strong>
+                            <img src="assets/images/example.jpg" class="dancol-img-full" alt="全宽图片">
+                        </div>
+                    </div>
+                </div>
+
+                <h3>图片形状样式</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 图片圆角 --&gt;
+&lt;img src="image.jpg" class="dancol-img-rounded" alt="圆角图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-rounded-lg" alt="大圆角图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-rounded-xl" alt="超大圆角图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-circle" alt="圆形图片"&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">🔲 图片形状演示</div>
+                    <div class="demo-content">
+                        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" style="max-width: 100px;" alt="默认">
+                                <div style="font-size: 0.8rem; margin-top: 0.25rem;">默认</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-rounded" style="max-width: 100px;" alt="圆角">
+                                <div style="font-size: 0.8rem; margin-top: 0.25rem;">圆角</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-rounded-lg" style="max-width: 100px;" alt="大圆角">
+                                <div style="font-size: 0.8rem; margin-top: 0.25rem;">大圆角</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-circle" style="max-width: 100px;" alt="圆形">
+                                <div style="font-size: 0.8rem; margin-top: 0.25rem;">圆形</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>图片阴影效果</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 图片阴影 --&gt;
+&lt;img src="image.jpg" class="dancol-img-shadow" alt="阴影图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-shadow-lg" alt="大阴影图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-shadow-hover" alt="悬停阴影图片"&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">🌟 图片阴影演示</div>
+                    <div class="demo-content">
+                        <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; padding: 1rem;">
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-shadow" style="max-width: 120px;" alt="阴影">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">普通阴影</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-shadow-lg" style="max-width: 120px;" alt="大阴影">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">大阴影</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-shadow-hover" style="max-width: 120px;" alt="悬停阴影">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">悬停阴影（鼠标悬停试试）</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>图片边框样式</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 图片边框 --&gt;
+&lt;img src="image.jpg" class="dancol-img-border" alt="边框图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-border-primary" alt="主色边框图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-border-thick" alt="厚边框图片"&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">🖼️ 图片边框演示</div>
+                    <div class="demo-content">
+                        <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; padding: 1rem;">
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-border" style="max-width: 100px;" alt="边框">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">普通边框</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-border-primary" style="max-width: 100px;" alt="主色边框">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">主色边框</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-border-thick" style="max-width: 100px;" alt="厚边框">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">厚边框</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>图片滤镜效果</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 图片滤镜 --&gt;
+&lt;img src="image.jpg" class="dancol-img-grayscale" alt="灰度图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-sepia" alt="复古图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-blur" alt="模糊图片"&gt;
+&lt;img src="image.jpg" class="dancol-img-brightness" alt="亮度图片"&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">🎨 图片滤镜演示</div>
+                    <div class="demo-content">
+                        <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; padding: 1rem;">
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" style="max-width: 100px;" alt="原图">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">原图</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-grayscale" style="max-width: 100px;" alt="灰度">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">灰度（悬停恢复）</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-sepia" style="max-width: 100px;" alt="复古">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">复古</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-blur" style="max-width: 100px;" alt="模糊">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">模糊（悬停清晰）</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/example.jpg" class="dancol-img-brightness" style="max-width: 100px;" alt="亮度">
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">高亮度</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>图片网格布局</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 图片网格布局 --&gt;
+&lt;div class="dancol-img-grid dancol-img-grid-2"&gt;
+    &lt;img src="image1.jpg" alt="图片1"&gt;
+    &lt;img src="image2.jpg" alt="图片2"&gt;
+&lt;/div&gt;
+
+&lt;div class="dancol-img-grid dancol-img-grid-3"&gt;
+    &lt;img src="image1.jpg" alt="图片1"&gt;
+    &lt;img src="image2.jpg" alt="图片2"&gt;
+    &lt;img src="image3.jpg" alt="图片3"&gt;
+&lt;/div&gt;
+
+&lt;div class="dancol-img-grid dancol-img-grid-auto"&gt;
+    &lt;img src="image1.jpg" alt="图片1"&gt;
+    &lt;img src="image2.jpg" alt="图片2"&gt;
+    &lt;img src="image3.jpg" alt="图片3"&gt;
+    &lt;img src="image4.jpg" alt="图片4"&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📱 图片网格演示</div>
+                    <div class="demo-content">
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong>两列网格：</strong>
+                            <div class="dancol-img-grid dancol-img-grid-2">
+                                <img src="assets/images/example.jpg" alt="网格1">
+                                <img src="assets/images/example.jpg" alt="网格2">
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong>三列网格：</strong>
+                            <div class="dancol-img-grid dancol-img-grid-3">
+                                <img src="assets/images/example.jpg" alt="1">
+                                <img src="assets/images/example.jpg" alt="2">
+                                <img src="assets/images/example.jpg" alt="3">
+                            </div>
+                        </div>
+                        <div>
+                            <strong>自适应网格：</strong>
+                            <div class="dancol-img-grid dancol-img-grid-auto">
+                                <img src="assets/images/example.jpg" alt="自适应1">
+                                <img src="assets/images/example.jpg" alt="自适应2">
+                                <img src="assets/images/example.jpg" alt="自适应3">
+                                <img src="assets/images/example.jpg" alt="自适应4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>图片画廊样式</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 图片画廊 --&gt;
+&lt;div class="dancol-img-gallery"&gt;
+    &lt;div class="dancol-img-gallery-item"&gt;
+        &lt;img src="image1.jpg" alt="画廊图片1"&gt;
+    &lt;/div&gt;
+    &lt;div class="dancol-img-gallery-item"&gt;
+        &lt;img src="image2.jpg" alt="画廊图片2"&gt;
+    &lt;/div&gt;
+    &lt;div class="dancol-img-gallery-item"&gt;
+        &lt;img src="image3.jpg" alt="画廊图片3"&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">🖼️ 图片画廊演示</div>
+                    <div class="demo-content">
+                        <div class="dancol-img-gallery">
+                            <div class="dancol-img-gallery-item">
+                                <img src="assets/images/example.jpg" alt="画廊1">
+                            </div>
+                            <div class="dancol-img-gallery-item">
+                                <img src="assets/images/example.jpg" alt="画廊2">
+                            </div>
+                            <div class="dancol-img-gallery-item">
+                                <img src="assets/images/example.jpg" alt="画廊3">
+                            </div>
+                            <div class="dancol-img-gallery-item">
+                                <img src="assets/images/example.jpg" alt="画廊4">
+                            </div>
+                            <div class="dancol-img-gallery-item">
+                                <img src="assets/images/example.jpg" alt="画廊5">
+                            </div>
+                            <div class="dancol-img-gallery-item">
+                                <img src="assets/images/example.jpg" alt="画廊6">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>头像样式</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 头像样式 --&gt;
+&lt;img src="avatar.jpg" class="dancol-avatar dancol-avatar-xs" alt="超小头像"&gt;
+&lt;img src="avatar.jpg" class="dancol-avatar dancol-avatar-sm" alt="小头像"&gt;
+&lt;img src="avatar.jpg" class="dancol-avatar dancol-avatar-md" alt="中等头像"&gt;
+&lt;img src="avatar.jpg" class="dancol-avatar dancol-avatar-lg" alt="大头像"&gt;
+&lt;img src="avatar.jpg" class="dancol-avatar dancol-avatar-xl" alt="超大头像"&gt;
+&lt;img src="avatar.jpg" class="dancol-avatar dancol-avatar-2xl" alt="巨大头像"&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">👤 头像样式演示</div>
+                    <div class="demo-content">
+                        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                            <div style="text-align: center;">
+                                <img src="assets/images/avatar.jpg" class="dancol-avatar dancol-avatar-xs" alt="超小">
+                                <div style="font-size: 0.7rem; margin-top: 0.25rem;">XS (24px)</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/avatar.jpg" class="dancol-avatar dancol-avatar-sm" alt="小">
+                                <div style="font-size: 0.7rem; margin-top: 0.25rem;">SM (32px)</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/avatar.jpg" class="dancol-avatar dancol-avatar-md" alt="中">
+                                <div style="font-size: 0.7rem; margin-top: 0.25rem;">MD (48px)</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/avatar.jpg" class="dancol-avatar dancol-avatar-lg" alt="大">
+                                <div style="font-size: 0.7rem; margin-top: 0.25rem;">LG (64px)</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/avatar.jpg" class="dancol-avatar dancol-avatar-xl" alt="超大">
+                                <div style="font-size: 0.7rem; margin-top: 0.25rem;">XL (96px)</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <img src="assets/images/avatar.jpg" class="dancol-avatar dancol-avatar-2xl" alt="巨大">
+                                <div style="font-size: 0.7rem; margin-top: 0.25rem;">2XL (128px)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>图片容器和叠加效果</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 图片容器（悬停缩放） --&gt;
+&lt;div class="dancol-img-container"&gt;
+    &lt;img src="image.jpg" alt="悬停缩放图片"&gt;
+&lt;/div&gt;
+
+&lt;!-- 图片叠加效果 --&gt;
+&lt;div class="dancol-img-overlay"&gt;
+    &lt;img src="image.jpg" alt="叠加效果图片"&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">✨ 特殊效果演示</div>
+                    <div class="demo-content">
+                        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                            <div style="text-align: center;">
+                                <div class="dancol-img-container" style="display: inline-block;">
+                                    <img src="assets/images/example.jpg" alt="悬停缩放">
+                                </div>
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">悬停缩放效果</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="dancol-img-overlay" style="display: inline-block;">
+                                    <img src="assets/images/example.jpg" alt="叠加效果">
+                                </div>
+                                <div style="font-size: 0.8rem; margin-top: 0.5rem;">悬停叠加效果</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>响应式图片处理</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 响应式图片 --&gt;
+&lt;!-- 在移动端，左右对齐的图片会自动变为居中显示 --&gt;
+&lt;img src="image.jpg" class="dancol-img-left" alt="响应式左对齐"&gt;
+
+&lt;!-- 网格布局在移动端会自动变为单列 --&gt;
+&lt;div class="dancol-img-grid dancol-img-grid-3"&gt;
+    &lt;img src="image1.jpg" alt="响应式网格1"&gt;
+    &lt;img src="image2.jpg" alt="响应式网格2"&gt;
+    &lt;img src="image3.jpg" alt="响应式网格3"&gt;
+&lt;/div&gt;
+
+&lt;!-- 大尺寸图片在移动端会自动适配 --&gt;
+&lt;img src="large-image.jpg" class="dancol-img-lg" alt="响应式大图"&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📱 响应式说明</div>
+                    <div class="demo-content">
+                        <p><strong>移动端适配特性：</strong></p>
+                        <ul style="margin-left: 1rem;">
+                            <li>左右对齐的图片在移动端会自动变为居中显示</li>
+                            <li>多列网格布局在移动端会自动变为单列布局</li>
+                            <li>大尺寸图片会自动适配屏幕宽度</li>
+                            <li>画廊布局在移动端会优化间距和尺寸</li>
+                            <li>头像在超小屏幕会限制最大尺寸</li>
+                        </ul>
+                        <p style="margin-top: 1rem;"><em>提示：调整浏览器窗口大小可以体验响应式效果。</em></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 表格样式专区 -->
+            <section id="table-styles" class="api-section">
+                <h2>表格样式控制</h2>
+                <p>Dancol UI 提供了完整的表格样式系统，支持主题配色同步，让您能够创建美观且功能丰富的数据表格。表头背景色会根据当前选择的主题自动调整。</p>
+
+                <h3>基础表格样式</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 基础表格 --&gt;
+&lt;table class="dancol-table"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;姓名&lt;/th&gt;
+            &lt;th&gt;年龄&lt;/th&gt;
+            &lt;th&gt;职业&lt;/th&gt;
+            &lt;th&gt;操作&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;张三&lt;/td&gt;
+            &lt;td&gt;28&lt;/td&gt;
+            &lt;td&gt;前端工程师&lt;/td&gt;
+            &lt;td&gt;&lt;button class="dancol-btn dancol-btn-sm"&gt;编辑&lt;/button&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📋 基础表格演示</div>
+                    <div class="demo-content">
+                        <table class="dancol-table">
+                            <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>年龄</th>
+                                    <th>职业</th>
+                                    <th>城市</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>张小明</td>
+                                    <td>28</td>
+                                    <td>前端工程师</td>
+                                    <td>北京</td>
+                                    <td>
+                                        <button class="dancol-btn dancol-btn-sm dancol-btn-primary">编辑</button>
+                                        <button class="dancol-btn dancol-btn-sm dancol-btn-outline">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>李小红</td>
+                                    <td>25</td>
+                                    <td>UI设计师</td>
+                                    <td>上海</td>
+                                    <td>
+                                        <button class="dancol-btn dancol-btn-sm dancol-btn-primary">编辑</button>
+                                        <button class="dancol-btn dancol-btn-sm dancol-btn-outline">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>王大力</td>
+                                    <td>32</td>
+                                    <td>后端工程师</td>
+                                    <td>深圳</td>
+                                    <td>
+                                        <button class="dancol-btn dancol-btn-sm dancol-btn-primary">编辑</button>
+                                        <button class="dancol-btn dancol-btn-sm dancol-btn-outline">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3>带边框表格</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 带边框表格 --&gt;
+&lt;table class="dancol-table dancol-table-bordered"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;产品名称&lt;/th&gt;
+            &lt;th&gt;价格&lt;/th&gt;
+            &lt;th&gt;库存&lt;/th&gt;
+            &lt;th&gt;状态&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;智能手机&lt;/td&gt;
+            &lt;td&gt;¥3,999&lt;/td&gt;
+            &lt;td&gt;156&lt;/td&gt;
+            &lt;td&gt;&lt;span class="dancol-badge dancol-badge-success"&gt;有库存&lt;/span&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">🔲 带边框表格演示</div>
+                    <div class="demo-content">
+                        <table class="dancol-table dancol-table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>产品名称</th>
+                                    <th>价格</th>
+                                    <th>库存</th>
+                                    <th>销量</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>智能手机 Pro</td>
+                                    <td>¥3,999</td>
+                                    <td>156</td>
+                                    <td>1,234</td>
+                                    <td><span class="dancol-badge dancol-badge-success">有库存</span></td>
+                                </tr>
+                                <tr>
+                                    <td>无线耳机</td>
+                                    <td>¥399</td>
+                                    <td>89</td>
+                                    <td>567</td>
+                                    <td><span class="dancol-badge dancol-badge-success">有库存</span></td>
+                                </tr>
+                                <tr>
+                                    <td>智能手表</td>
+                                    <td>¥1,299</td>
+                                    <td>0</td>
+                                    <td>234</td>
+                                    <td><span class="dancol-badge dancol-badge-error">缺货</span></td>
+                                </tr>
+                                <tr>
+                                    <td>平板电脑</td>
+                                    <td>¥2,599</td>
+                                    <td>23</td>
+                                    <td>89</td>
+                                    <td><span class="dancol-badge dancol-badge-warning">库存不足</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3>条纹表格</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 条纹表格 --&gt;
+&lt;table class="dancol-table dancol-table-striped"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;订单号&lt;/th&gt;
+            &lt;th&gt;客户&lt;/th&gt;
+            &lt;th&gt;金额&lt;/th&gt;
+            &lt;th&gt;状态&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;#12345&lt;/td&gt;
+            &lt;td&gt;张三&lt;/td&gt;
+            &lt;td&gt;¥1,299&lt;/td&gt;
+            &lt;td&gt;&lt;span class="dancol-badge dancol-badge-success"&gt;已完成&lt;/span&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📊 条纹表格演示</div>
+                    <div class="demo-content">
+                        <table class="dancol-table dancol-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>订单号</th>
+                                    <th>客户</th>
+                                    <th>金额</th>
+                                    <th>下单时间</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#12345</td>
+                                    <td>张小明</td>
+                                    <td>¥1,299</td>
+                                    <td>2024-01-20 14:30</td>
+                                    <td><span class="dancol-badge dancol-badge-success">已完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td>#12346</td>
+                                    <td>李小红</td>
+                                    <td>¥899</td>
+                                    <td>2024-01-20 15:45</td>
+                                    <td><span class="dancol-badge dancol-badge-info">处理中</span></td>
+                                </tr>
+                                <tr>
+                                    <td>#12347</td>
+                                    <td>王大力</td>
+                                    <td>¥2,599</td>
+                                    <td>2024-01-20 16:20</td>
+                                    <td><span class="dancol-badge dancol-badge-warning">待付款</span></td>
+                                </tr>
+                                <tr>
+                                    <td>#12348</td>
+                                    <td>赵美丽</td>
+                                    <td>¥599</td>
+                                    <td>2024-01-20 17:10</td>
+                                    <td><span class="dancol-badge dancol-badge-error">已取消</span></td>
+                                </tr>
+                                <tr>
+                                    <td>#12349</td>
+                                    <td>孙志强</td>
+                                    <td>¥1,899</td>
+                                    <td>2024-01-20 18:30</td>
+                                    <td><span class="dancol-badge dancol-badge-success">已完成</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3>悬停效果表格</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 悬停效果表格 --&gt;
+&lt;table class="dancol-table dancol-table-hover"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;用户&lt;/th&gt;
+            &lt;th&gt;邮箱&lt;/th&gt;
+            &lt;th&gt;注册时间&lt;/th&gt;
+            &lt;th&gt;状态&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;张三&lt;/td&gt;
+            &lt;td&gt;zhangsan@example.com&lt;/td&gt;
+            &lt;td&gt;2024-01-15&lt;/td&gt;
+            &lt;td&gt;&lt;span class="dancol-badge dancol-badge-success"&gt;活跃&lt;/span&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">✨ 悬停效果表格演示</div>
+                    <div class="demo-content">
+                        <table class="dancol-table dancol-table-hover">
+                            <thead>
+                                <tr>
+                                    <th>用户头像</th>
+                                    <th>用户信息</th>
+                                    <th>邮箱</th>
+                                    <th>注册时间</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="assets/images/avatar.jpg"
+                                             class="dancol-avatar dancol-avatar-sm" alt="张三">
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <div style="font-weight: 500;">张小明</div>
+                                            <div style="font-size: 0.8rem; color: var(--dancol-text-muted);">ID: 001</div>
+                                        </div>
+                                    </td>
+                                    <td>zhangxm@example.com</td>
+                                    <td>2024-01-15</td>
+                                    <td><span class="dancol-badge dancol-badge-success">活跃</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="assets/images/avatar.jpg"
+                                             class="dancol-avatar dancol-avatar-sm" alt="李四">
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <div style="font-weight: 500;">李小红</div>
+                                            <div style="font-size: 0.8rem; color: var(--dancol-text-muted);">ID: 002</div>
+                                        </div>
+                                    </td>
+                                    <td>lixh@example.com</td>
+                                    <td>2024-01-10</td>
+                                    <td><span class="dancol-badge dancol-badge-warning">非活跃</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="assets/images/avatar.jpg"
+                                             class="dancol-avatar dancol-avatar-sm" alt="王五">
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <div style="font-weight: 500;">王大力</div>
+                                            <div style="font-size: 0.8rem; color: var(--dancol-text-muted);">ID: 003</div>
+                                        </div>
+                                    </td>
+                                    <td>wangdl@example.com</td>
+                                    <td>2024-01-05</td>
+                                    <td><span class="dancol-badge dancol-badge-error">已禁用</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3>紧凑表格</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 紧凑表格 --&gt;
+&lt;table class="dancol-table dancol-table-sm"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;项目&lt;/th&gt;
+            &lt;th&gt;数值&lt;/th&gt;
+            &lt;th&gt;单位&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;CPU使用率&lt;/td&gt;
+            &lt;td&gt;45%&lt;/td&gt;
+            &lt;td&gt;百分比&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📏 紧凑表格演示</div>
+                    <div class="demo-content">
+                        <table class="dancol-table dancol-table-sm dancol-table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>系统指标</th>
+                                    <th>当前值</th>
+                                    <th>阈值</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CPU使用率</td>
+                                    <td>45%</td>
+                                    <td>80%</td>
+                                    <td><span class="dancol-badge dancol-badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>内存使用率</td>
+                                    <td>67%</td>
+                                    <td>85%</td>
+                                    <td><span class="dancol-badge dancol-badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>磁盘使用率</td>
+                                    <td>89%</td>
+                                    <td>90%</td>
+                                    <td><span class="dancol-badge dancol-badge-warning">警告</span></td>
+                                </tr>
+                                <tr>
+                                    <td>网络延迟</td>
+                                    <td>25ms</td>
+                                    <td>100ms</td>
+                                    <td><span class="dancol-badge dancol-badge-success">正常</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3>响应式表格</h3>
+                <div class="code-example">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <pre><code>&lt;!-- 响应式表格容器 --&gt;
+&lt;div class="dancol-table-responsive"&gt;
+    &lt;table class="dancol-table"&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th&gt;产品ID&lt;/th&gt;
+                &lt;th&gt;产品名称&lt;/th&gt;
+                &lt;th&gt;分类&lt;/th&gt;
+                &lt;th&gt;价格&lt;/th&gt;
+                &lt;th&gt;库存&lt;/th&gt;
+                &lt;th&gt;销量&lt;/th&gt;
+                &lt;th&gt;状态&lt;/th&gt;
+                &lt;th&gt;操作&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            &lt;tr&gt;
+                &lt;td&gt;P001&lt;/td&gt;
+                &lt;td&gt;智能手机&lt;/td&gt;
+                &lt;td&gt;数码产品&lt;/td&gt;
+                &lt;td&gt;¥3,999&lt;/td&gt;
+                &lt;td&gt;156&lt;/td&gt;
+                &lt;td&gt;1,234&lt;/td&gt;
+                &lt;td&gt;&lt;span class="dancol-badge dancol-badge-success"&gt;上架&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;button class="dancol-btn dancol-btn-sm"&gt;编辑&lt;/button&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <div class="demo-section">
+                    <div class="demo-title">📱 响应式表格演示</div>
+                    <div class="demo-content">
+                        <p style="margin-bottom: 1rem; color: var(--dancol-text-muted); font-size: 0.9rem;">
+                            <em>在小屏幕设备上，表格会出现水平滚动条以保持数据的完整显示。</em>
+                        </p>
+                        <div class="dancol-table-responsive">
+                            <table class="dancol-table dancol-table-striped dancol-table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>产品ID</th>
+                                        <th>产品名称</th>
+                                        <th>分类</th>
+                                        <th>价格</th>
+                                        <th>库存</th>
+                                        <th>销量</th>
+                                        <th>评分</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>P001</td>
+                                        <td>智能手机 Pro Max</td>
+                                        <td>数码产品</td>
+                                        <td>¥3,999</td>
+                                        <td>156</td>
+                                        <td>1,234</td>
+                                        <td>4.8⭐</td>
+                                        <td><span class="dancol-badge dancol-badge-success">上架</span></td>
+                                        <td>
+                                            <button class="dancol-btn dancol-btn-sm dancol-btn-primary">编辑</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>P002</td>
+                                        <td>无线蓝牙耳机</td>
+                                        <td>音频设备</td>
+                                        <td>¥399</td>
+                                        <td>89</td>
+                                        <td>567</td>
+                                        <td>4.6⭐</td>
+                                        <td><span class="dancol-badge dancol-badge-success">上架</span></td>
+                                        <td>
+                                            <button class="dancol-btn dancol-btn-sm dancol-btn-primary">编辑</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>P003</td>
+                                        <td>智能手表运动版</td>
+                                        <td>可穿戴设备</td>
+                                        <td>¥1,299</td>
+                                        <td>0</td>
+                                        <td>234</td>
+                                        <td>4.4⭐</td>
+                                        <td><span class="dancol-badge dancol-badge-error">缺货</span></td>
+                                        <td>
+                                            <button class="dancol-btn dancol-btn-sm dancol-btn-secondary">补货</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>主题配色同步</h3>
+                <div class="demo-section">
+                    <div class="demo-title">🎨 主题配色演示</div>
+                    <div class="demo-content">
+                        <p style="margin-bottom: 1rem;">
+                            <strong>表头背景色会根据当前选择的主题自动调整：</strong>
+                        </p>
+                        <ul style="margin-bottom: 1rem; padding-left: 1.5rem;">
+                            <li>淡蓝主题：表头使用淡蓝色背景</li>
+                            <li>淡绿主题：表头使用淡绿色背景</li>
+                            <li>米黄主题：表头使用米黄色背景</li>
+                            <li>柔和主题：表头使用暖橙色背景</li>
+                            <li>深色主题：表头使用深色背景</li>
+                        </ul>
+                        <p style="color: var(--dancol-text-muted); font-size: 0.9rem;">
+                            <em>请尝试切换页面右上角的主题，观察表头颜色的变化效果。</em>
+                        </p>
+
+                        <table class="dancol-table dancol-table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>主题名称</th>
+                                    <th>主色调</th>
+                                    <th>适用场景</th>
+                                    <th>特点</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>淡蓝主题</td>
+                                    <td><span style="display: inline-block; width: 16px; height: 16px; background: #6ba3d6; border-radius: 50%; margin-right: 8px;"></span>#6ba3d6</td>
+                                    <td>商务办公</td>
+                                    <td>清新淡雅，专业稳重</td>
+                                </tr>
+                                <tr>
+                                    <td>淡绿主题</td>
+                                    <td><span style="display: inline-block; width: 16px; height: 16px; background: #68d391; border-radius: 50%; margin-right: 8px;"></span>#68d391</td>
+                                    <td>健康环保</td>
+                                    <td>自然舒适，生机盎然</td>
+                                </tr>
+                                <tr>
+                                    <td>米黄主题</td>
+                                    <td><span style="display: inline-block; width: 16px; height: 16px; background: #d69e2e; border-radius: 50%; margin-right: 8px;"></span>#d69e2e</td>
+                                    <td>文化艺术</td>
+                                    <td>温暖典雅，古典韵味</td>
+                                </tr>
+                                <tr>
+                                    <td>柔和主题</td>
+                                    <td><span style="display: inline-block; width: 16px; height: 16px; background: #ed8936; border-radius: 50%; margin-right: 8px;"></span>#ed8936</td>
+                                    <td>活力创意</td>
+                                    <td>温暖如阳光，充满活力</td>
+                                </tr>
+                                <tr>
+                                    <td>深色主题</td>
+                                    <td><span style="display: inline-block; width: 16px; height: 16px; background: #60a5fa; border-radius: 50%; margin-right: 8px;"></span>#60a5fa</td>
+                                    <td>夜间浏览</td>
+                                    <td>护眼舒适，科技感强</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 事件系统 -->
+            <section id="events" class="api-section">
+                <h2>事件系统</h2>
+                <p>Dancol UI 提供了自定义事件系统，让您能够监听框架内部的状态变化。</p>
+
+                <h3>框架事件</h3>
+                <div class="method-card">
+                    <h4>dancol:ready</h4>
+                    <p>框架初始化完成时触发。</p>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>document.addEventListener('dancol:ready', function(e) {
+    console.log('Dancol UI 已准备就绪');
+    console.log('框架版本:', e.detail.version);
+});</code></pre>
+                    </div>
+                </div>
+
+                <h3>主题事件</h3>
+                <div class="method-card">
+                    <h4>dancol:theme-changed</h4>
+                    <p>主题切换时触发。</p>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>document.addEventListener('dancol:theme-changed', function(e) {
+    console.log('主题已切换为:', e.detail.theme);
+    console.log('主题信息:', e.detail.themeInfo);
+});</code></pre>
+                    </div>
+                </div>
+
+                <h3>Toast事件</h3>
+                <div class="method-card">
+                    <h4>dancol:toast-show</h4>
+                    <p>Toast显示时触发。</p>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>document.addEventListener('dancol:toast-show', function(e) {
+    console.log('Toast已显示:', e.detail.id);
+    console.log('消息类型:', e.detail.type);
+});</code></pre>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h4>dancol:toast-hide</h4>
+                    <p>Toast隐藏时触发。</p>
+                    <div class="code-example">
+                        <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                        <pre><code>document.addEventListener('dancol:toast-hide', function(e) {
+    console.log('Toast已隐藏:', e.detail.id);
+});</code></pre>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Dancol JavaScript -->
+    <script src="assets/js/dancol-core.js"></script>
+    <script src="assets/js/dancol-theme.js"></script>
+    <script src="assets/js/dancol-toast.js"></script>
+    
+    <script>
+        // 复制代码功能
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const code = codeBlock.textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '已复制';
+                button.style.backgroundColor = 'var(--dancol-success)';
+                button.style.color = 'white';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.backgroundColor = '';
+                    button.style.color = '';
+                }, 2000);
+
+                Dancol.Toast.success('代码已复制到剪贴板', {
+                    duration: 2000,
+                    position: 'top-right'
+                });
+            }).catch(() => {
+                Dancol.Toast.error('复制失败，请手动复制', {
+                    duration: 3000,
+                    position: 'top-right'
+                });
+            });
+        }
+
+        // 演示功能
+        function demoApplyTheme(theme) {
+            Dancol.Theme.applyTheme(theme);
+            const themeNames = {
+                'light-blue': '淡蓝主题',
+                'light-green': '淡绿主题',
+                'cream': '米黄主题',
+                'warm': '暖色主题'
+            };
+            document.getElementById('currentThemeDisplay').textContent = themeNames[theme] || theme;
+            Dancol.Toast.success(`已切换到${themeNames[theme]}`, {
+                duration: 2000,
+                position: 'top-center'
+            });
+        }
+
+        function demoToast(type, message) {
+            Dancol.Toast.show(type, message, {
+                duration: 3000,
+                position: 'top-right'
+            });
+        }
+
+        function demoToastPosition(position) {
+            const positionNames = {
+                'top-left': '左上角',
+                'top-center': '顶部居中',
+                'top-right': '右上角',
+                'bottom-right': '右下角',
+                'bottom-center': '底部居中',
+                'bottom-left': '左下角'
+            };
+            Dancol.Toast.info(`这是${positionNames[position]}的消息`, {
+                position: position,
+                duration: 3000
+            });
+        }
+
+        // 文字对齐演示功能
+        function changeTextAlignment(alignment) {
+            const demo = document.getElementById('textAlignmentDemo');
+            // 移除所有对齐类
+            demo.classList.remove('dancol-text-left', 'dancol-text-center', 'dancol-text-right', 'dancol-text-justify');
+            // 添加新的对齐类
+            demo.classList.add(`dancol-text-${alignment}`);
+
+            const alignmentNames = {
+                'left': '左对齐',
+                'center': '居中对齐',
+                'right': '右对齐',
+                'justify': '两端对齐'
+            };
+
+            Dancol.Toast.success(`已切换到${alignmentNames[alignment]}`, {
+                duration: 2000,
+                position: 'top-center'
+            });
+        }
+
+        function changeTextColor(color) {
+            const demo = document.getElementById('textColorDemo');
+            // 移除所有颜色类
+            demo.classList.remove('dancol-text-primary', 'dancol-text-secondary', 'dancol-text-success',
+                                 'dancol-text-warning', 'dancol-text-error', 'dancol-text-info', 'dancol-text-muted');
+            // 添加新的颜色类
+            demo.classList.add(`dancol-text-${color}`);
+
+            const colorNames = {
+                'primary': '主要色',
+                'secondary': '次要色',
+                'success': '成功色',
+                'warning': '警告色',
+                'error': '错误色',
+                'info': '信息色',
+                'muted': '静音色'
+            };
+
+            Dancol.Toast.success(`已切换到${colorNames[color]}`, {
+                duration: 2000,
+                position: 'top-center'
+            });
+        }
+
+        function changeTextSize(size) {
+            const demo = document.getElementById('textSizeDemo');
+            // 移除所有大小类
+            demo.classList.remove('dancol-text-xs', 'dancol-text-sm', 'dancol-text-base',
+                                 'dancol-text-lg', 'dancol-text-xl');
+            // 添加新的大小类
+            demo.classList.add(`dancol-text-${size}`);
+
+            const sizeNames = {
+                'xs': '超小文本 (12px)',
+                'sm': '小文本 (14px)',
+                'base': '基础文本 (16px)',
+                'lg': '大文本 (18px)',
+                'xl': '超大文本 (20px)'
+            };
+
+            Dancol.Toast.success(`已切换到${sizeNames[size]}`, {
+                duration: 2000,
+                position: 'top-center'
+            });
+        }
+        
+        // 侧边栏导航高亮
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.api-section');
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', updateActiveNav);
+        
+        // 移动端侧边栏功能
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('mobileSidebar');
+            sidebar.style.display = 'block';
+            sidebar.style.opacity = '0';
+            setTimeout(() => {
+                sidebar.style.opacity = '1';
+                sidebar.classList.add('active');
+            }, 10);
+
+            // 禁止body滚动
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileSidebar(event) {
+            const sidebar = document.getElementById('mobileSidebar');
+
+            // 如果点击的是背景或关闭按钮
+            if (!event || event.target === sidebar || event.target.closest('.mobile-sidebar-close')) {
+                sidebar.classList.remove('active');
+                setTimeout(() => {
+                    sidebar.style.opacity = '0';
+                    setTimeout(() => {
+                        sidebar.style.display = 'none';
+                        document.body.style.overflow = '';
+                    }, 300);
+                }, 300);
+            }
+        }
+
+        // 更新移动端导航高亮
+        function updateMobileActiveNav() {
+            const sections = document.querySelectorAll('.api-section');
+            const mobileNavLinks = document.querySelectorAll('.mobile-sidebar-nav a');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            mobileNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // 平滑滚动 - 桌面端
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 平滑滚动 - 移动端
+        document.querySelectorAll('.mobile-sidebar-nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 监听滚动事件，同时更新桌面端和移动端导航
+        window.addEventListener('scroll', function() {
+            updateActiveNav();
+            updateMobileActiveNav();
+        });
+
+        // 监听窗口大小变化，自动关闭移动端侧边栏
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                const sidebar = document.getElementById('mobileSidebar');
+                sidebar.classList.remove('active');
+                sidebar.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        // 键盘事件支持
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('mobileSidebar');
+                if (sidebar.classList.contains('active')) {
+                    closeMobileSidebar();
+                }
+            }
+        });
+
+        // 监听主题变化事件，同步更新表格表头颜色
+        document.addEventListener('dancol:theme-changed', function(e) {
+            const themeInfo = e.detail.themeInfo;
+            const themeName = e.detail.theme;
+
+            // 更新所有表格表头的背景色
+            updateTableHeaderColors(themeInfo.color);
+
+            // 显示主题变化提示
+            if (typeof Dancol !== 'undefined' && Dancol.Toast) {
+                Dancol.Toast.success(`主题已切换为：${themeInfo.name}`, {
+                    position: 'top-right',
+                    duration: 3000
+                });
+            }
+
+            console.log('表格主题已同步更新:', themeName, themeInfo.color);
+        });
+
+        // 更新表格表头颜色的函数
+        function updateTableHeaderColors(primaryColor) {
+            // 计算深色版本（用于边框）
+            const darkColor = adjustColorBrightness(primaryColor, -20);
+
+            // 更新CSS变量
+            document.documentElement.style.setProperty('--dancol-table-header-bg', primaryColor);
+            document.documentElement.style.setProperty('--dancol-table-header-border', darkColor);
+
+            // 直接更新所有表格表头样式（作为备用方案）
+            const tableHeaders = document.querySelectorAll('.dancol-table th');
+            tableHeaders.forEach(th => {
+                th.style.backgroundColor = primaryColor;
+                th.style.borderBottomColor = darkColor;
+            });
+        }
+
+        // 调整颜色亮度的辅助函数
+        function adjustColorBrightness(hex, percent) {
+            // 移除 # 符号
+            hex = hex.replace('#', '');
+
+            // 转换为 RGB
+            const r = parseInt(hex.substr(0, 2), 16);
+            const g = parseInt(hex.substr(2, 2), 16);
+            const b = parseInt(hex.substr(4, 2), 16);
+
+            // 调整亮度
+            const newR = Math.max(0, Math.min(255, r + (r * percent / 100)));
+            const newG = Math.max(0, Math.min(255, g + (g * percent / 100)));
+            const newB = Math.max(0, Math.min(255, b + (b * percent / 100)));
+
+            // 转换回十六进制
+            const toHex = (c) => {
+                const hex = Math.round(c).toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            };
+
+            return `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
+        }
+
+        // 页面加载完成后初始化表格颜色
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取当前主题
+            if (typeof Dancol !== 'undefined' && Dancol.Theme) {
+                const currentTheme = Dancol.Theme.getCurrentTheme();
+                const themeInfo = Dancol.Theme.getThemeInfo(currentTheme);
+                if (themeInfo) {
+                    updateTableHeaderColors(themeInfo.color);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
